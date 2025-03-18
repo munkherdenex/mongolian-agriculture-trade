@@ -5,7 +5,7 @@ function Home() {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Home Page
+        Нүүр
       </Typography>
       <Typography variant="body1">
       Энд бид Монголын хөдөө аж ахуйн худалдааг харуулах болно.

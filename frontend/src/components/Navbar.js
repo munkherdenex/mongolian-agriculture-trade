@@ -14,30 +14,30 @@ function Navbar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" style={{ flexGrow: 1 }}>Mongolian Agricultural Trade</Typography>
-          <Button color="inherit" component={Link} to="/">Home</Button>
-          <Button color="inherit" component={Link} to="/products">Products</Button>
-          <Button color="inherit" component={Link} to="/saved-products">Saved</Button>
-          <Button color="inherit" component={Link} to="/about">About</Button>  {/* Added About */}
-          <Button color="inherit" component={Link} to="/contact">Contact</Button>  {/* Added Contact */}
+          <Button color="inherit" component={Link} to="/">Нүүр</Button>
+          <Button color="inherit" component={Link} to="/products">Бүтээгдэхүүн</Button>
+          <Button color="inherit" component={Link} to="/saved-products">Хадгалсан</Button>
+          <Button color="inherit" component={Link} to="/about">Бидний тухай</Button>  {/* Added About */}
+          <Button color="inherit" component={Link} to="/contact">Холбогдох</Button>  {/* Added Contact */}
         </Toolbar>
       </AppBar>
 
       <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)}>
         <List>
           <ListItem button component={Link} to="/" onClick={() => setMobileOpen(false)}>
-            <ListItemText primary="Home" />
+            <ListItemText primary="Нүүр" />
           </ListItem>
           <ListItem button component={Link} to="/products" onClick={() => setMobileOpen(false)}>
-            <ListItemText primary="Products" />
+            <ListItemText primary="Бүтээгдэхүүн" />
           </ListItem>
           <ListItem button component={Link} to="/saved-products" onClick={() => setMobileOpen(false)}>
-            <ListItemText primary="Saved" />
+            <ListItemText primary="Хадгалсан" />
           </ListItem>
           <ListItem button component={Link} to="/about" onClick={() => setMobileOpen(false)}>
-            <ListItemText primary="About" />
+            <ListItemText primary="Бидний тухай" />
           </ListItem>
           <ListItem button component={Link} to="/contact" onClick={() => setMobileOpen(false)}>
-            <ListItemText primary="Contact" />
+            <ListItemText primary="Холбогдох" />
           </ListItem>
         </List>
       </Drawer>
