@@ -5,10 +5,10 @@ function Contact() {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Contact Us
+      Бидэнтэй холбогдох
       </Typography>
       <Typography variant="body1">
-        You can contact us through email or by phone.
+      Та бидэнтэй утсаар эсвэл имэйлээр холбогдож болно.
       </Typography>
     </Container>
   );

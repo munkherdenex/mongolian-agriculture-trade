@@ -5,10 +5,10 @@ function Home() {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Welcome to the Home Page
+        Home Page
       </Typography>
       <Typography variant="body1">
-        Here we will showcase the Mongolian Agricultural Trade.
+      Энд бид Монголын хөдөө аж ахуйн худалдааг харуулах болно.
       </Typography>
     </Container>
   );

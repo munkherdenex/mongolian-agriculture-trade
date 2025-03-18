@@ -10,9 +10,9 @@ function SavedProducts({ savedProducts, setSavedProducts }) {
 
   return (
     <div style={{ margin: 20 }}>
-      <Typography variant="h5" gutterBottom>Saved Products</Typography>
+      <Typography variant="h5" gutterBottom>Хадгалсан бүтээгдэхүүн</Typography>
       {savedProducts.length === 0 ? (
-        <Typography>No products saved.</Typography>
+        <Typography>Хадгалсан бүтээгдэхүүн байхгүй.</Typography>
       ) : (
         <Grid container spacing={3}>
           {savedProducts.map((product) => (
@@ -28,7 +28,7 @@ function SavedProducts({ savedProducts, setSavedProducts }) {
                     onClick={() => handleRemove(product.id)}
                     style={{ marginTop: 10 }}
                   >
-                    Remove
+                    Устгах
                   </Button>
                 </CardContent>
               </Card>

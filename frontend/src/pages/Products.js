@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Card, CardContent, CardMedia, Button, Typography, Grid, Select, MenuItem, TextField } from "@mui/material";
 
 const productList = [
-  { id: 1, name: "Organic Wheat", price: "$15", image: "https://via.placeholder.com/150", category: "Grains" },
-  { id: 2, name: "Fresh Apples", price: "$10", image: "https://via.placeholder.com/150", category: "Fruits" },
-  { id: 3, name: "Dairy Milk", price: "$8", image: "https://via.placeholder.com/150", category: "Dairy" },
-  { id: 4, name: "Potatoes", price: "$5", image: "https://via.placeholder.com/150", category: "Vegetables" },
+  { id: 1, name: "Органик улаан буудай", price: "5,000 MNT", image: "https://via.placeholder.com/150", category: "Grains" },
+  { id: 2, name: "Шинэ алим", price: "6,000 MNT", image: "https://via.placeholder.com/150", category: "Fruits" },
+  { id: 3, name: "Сүү", price: "4,500 MNT", image: "https://via.placeholder.com/150", category: "Dairy" },
+  { id: 4, name: "Төмс", price: "2,000 MNT", image: "https://via.placeholder.com/150", category: "Vegetables" },
 ];
 
 function Products({ handleSave }) {
@@ -18,14 +18,14 @@ function Products({ handleSave }) {
 
   return (
     <div style={{ margin: 20 }}>
-      <Typography variant="h5" gutterBottom>Browse Products</Typography>
+      <Typography variant="h5" gutterBottom>Бүтээгдэхүүн үзэх</Typography>
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
         <Select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <MenuItem value="All">All Categories</MenuItem>
-          <MenuItem value="Grains">Grains</MenuItem>
-          <MenuItem value="Fruits">Fruits</MenuItem>
-          <MenuItem value="Dairy">Dairy</MenuItem>
-          <MenuItem value="Vegetables">Vegetables</MenuItem>
+          <MenuItem value="All">Бүх ангилал</MenuItem>
+          <MenuItem value="Grains">Үр тариа</MenuItem>
+          <MenuItem value="Fruits">Жимс</MenuItem>
+          <MenuItem value="Dairy">Сүүн бүтээгдэхүүн</MenuItem>
+          <MenuItem value="Vegetables">Хүнсний ногоо</MenuItem>
         </Select>
         <TextField
           label="Search Products"
@@ -37,7 +37,7 @@ function Products({ handleSave }) {
       </div>
       <Grid container spacing={3}>
         {filteredProducts.length === 0 ? (
-          <Typography>No matching products found.</Typography>
+          <Typography>Тохирох бүтээгдэхүүн олдсонгүй.</Typography>
         ) : (
           filteredProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product.id}>
@@ -47,7 +47,7 @@ function Products({ handleSave }) {
                   <Typography variant="h6">{product.name}</Typography>
                   <Typography variant="body2" color="textSecondary">{product.price}</Typography>
                   <Button variant="contained" color="primary" onClick={() => handleSave(product)} style={{ marginTop: 10 }}>
-                    Save
+                  Хадгалах
                   </Button>
                 </CardContent>
               </Card>

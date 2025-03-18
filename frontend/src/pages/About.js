@@ -5,10 +5,10 @@ function About() {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        About Us
+      Бидний тухай
       </Typography>
       <Typography variant="body1">
-        Learn more about our mission and vision in promoting Mongolian agriculture.
+      Монголын газар тариаланг хөгжүүлэх бидний эрхэм зорилго, алсын хараатай танилцана уу.
       </Typography>
     </Container>
   );
