@@ -1,61 +1,53 @@
-import React, { useState } from "react";
-import { Card, CardContent, CardMedia, Button, Typography, Grid, Select, MenuItem, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Container, Grid, Card, CardContent, Typography, Button } from "@mui/material";
+import axios from "axios";
 
-const productList = [
-  { id: 1, name: "Органик улаан буудай", price: "5,000 MNT", image: "https://via.placeholder.com/150", category: "Grains" },
-  { id: 2, name: "Шинэ алим", price: "6,000 MNT", image: "https://via.placeholder.com/150", category: "Fruits" },
-  { id: 3, name: "Сүү", price: "4,500 MNT", image: "https://via.placeholder.com/150", category: "Dairy" },
-  { id: 4, name: "Төмс", price: "2,000 MNT", image: "https://via.placeholder.com/150", category: "Vegetables" },
-];
+function Products() {
+  const [products, setProducts] = useState([]);
 
-function Products({ handleSave }) {
-  const [category, setCategory] = useState("All");
-  const [search, setSearch] = useState("");
+  // Fetch products from the backend
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/products")
+      .then((response) => setProducts(response.data))
+      .catch((error) => console.error("Error fetching products:", error));
+  }, []);
 
-  const filteredProducts = productList
-    .filter((p) => (category === "All" ? true : p.category === category))
-    .filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+  // Function to save a product
+  const handleSave = async (productId) => {
+    try {
+      await axios.post("http://localhost:5000/api/saved-products", { product_id: productId });
+      alert("Product saved successfully!"); // Show confirmation
+    } catch (error) {
+      console.error("Error saving product:", error);
+    }
+  };
 
   return (
-    <div style={{ margin: 20 }}>
-      <Typography variant="h5" gutterBottom>Бүтээгдэхүүн үзэх</Typography>
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <Select value={category} onChange={(e) => setCategory(e.target.value)}>
-          <MenuItem value="All">Бүх ангилал</MenuItem>
-          <MenuItem value="Grains">Үр тариа</MenuItem>
-          <MenuItem value="Fruits">Жимс</MenuItem>
-          <MenuItem value="Dairy">Сүүн бүтээгдэхүүн</MenuItem>
-          <MenuItem value="Vegetables">Хүнсний ногоо</MenuItem>
-        </Select>
-        <TextField
-          label="Search Products"
-          variant="outlined"
-          size="small"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Products
+      </Typography>
       <Grid container spacing={3}>
-        {filteredProducts.length === 0 ? (
-          <Typography>Тохирох бүтээгдэхүүн олдсонгүй.</Typography>
-        ) : (
-          filteredProducts.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product.id}>
-              <Card>
-                <CardMedia component="img" height="140" image={product.image} alt={product.name} />
-                <CardContent>
-                  <Typography variant="h6">{product.name}</Typography>
-                  <Typography variant="body2" color="textSecondary">{product.price}</Typography>
-                  <Button variant="contained" color="primary" onClick={() => handleSave(product)} style={{ marginTop: 10 }}>
-                  Хадгалах
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))
-        )}
+        {products.map((product) => (
+          <Grid item key={product.id} xs={12} sm={6} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{product.title}</Typography>
+                <Typography>{product.description}</Typography>
+                <Typography variant="h6">${product.price}</Typography>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={() => handleSave(product.id)} // Attach save function
+                >
+                  Save
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
       </Grid>
-    </div>
+    </Container>
   );
 }
 
