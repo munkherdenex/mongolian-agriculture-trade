@@ -21,7 +21,9 @@ function Navbar() {
           <Button color="inherit" component={Link} to="/products">Бүтээгдэхүүн</Button>
           <Button color="inherit" component={Link} to="/saved-products">Хадгалсан</Button>
           <Button color="inherit" component={Link} to="/about">Бидний тухай</Button> 
-          <Button color="inherit" component={Link} to="/contact">Холбогдох</Button> 
+          <Button color="inherit" component={Link} to="/contact">Холбогдох</Button>
+          <Button color="inherit" component={Link} to="/add-product">Нэмэх</Button> 
+ 
 
           {user ? (
             <>

@@ -12,6 +12,7 @@ import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import SavedProducts from "./pages/SavedProducts";
 import Navbar from "./components/Navbar";
+import AddProduct from "./pages/AddProduct"; // ✅ Import AddProduct
 import axios from "axios";
 
 
@@ -61,6 +62,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/add-product" element={<AddProduct />} /> {/* ✅ New Route */}
 
           {/* 🔒 Protected Routes */}
           <Route element={<PrivateRoute />}>
