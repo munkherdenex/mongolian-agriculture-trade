@@ -4,7 +4,7 @@ import { Container, TextField, Button, MenuItem, Typography, Box } from "@mui/ma
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    title: "",
     description: "",
     price: "",
     location: "",
@@ -45,7 +45,7 @@ const AddProduct = () => {
       alert("Бараа амжилттай нэмэгдлээ!");
 
       // Reset form after submission
-      setFormData({ name: "", description: "", price: "", location: "" });
+      setFormData({ title: "", description: "", price: "", location: "" });
       setImage(null);
       setPreview(null);
     } catch (error) {
@@ -68,7 +68,7 @@ const AddProduct = () => {
         </Typography>
       </Box>
       <form onSubmit={handleSubmit}>
-        <TextField fullWidth label="Барааны нэр" name="name" value={formData.name} onChange={handleChange} required margin="normal" />
+        <TextField fullWidth label="Барааны нэр" name="title" value={formData.title} onChange={handleChange} required margin="normal" />
         <TextField fullWidth label="Тайлбар" name="description" value={formData.description} onChange={handleChange} required margin="normal" multiline rows={3} />
         <TextField fullWidth label="Үнэ" name="price" type="number" value={formData.price} onChange={handleChange} required margin="normal" />
         <TextField select fullWidth label="Байршил" name="location" value={formData.location} onChange={handleChange} required margin="normal">

@@ -44,12 +44,12 @@ router.get("/:id", async (req, res) => {
 // 📌 3. Add a New Product with Image Upload
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const { name, description, price, location, contact_info } = req.body;
+    const { title, description, price, location } = req.body;
     const imageUrl = req.file ? req.file.path : null; // Store image URL if uploaded
 
     const result = await pool.query(
-      "INSERT INTO products (name, description, price, location, contact_info, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [name, description, price, location, contact_info, imageUrl]
+      "INSERT INTO products (title, description, price, location, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [title, description, price, location, imageUrl]
     );
     res.json(result.rows[0]);
   } catch (err) {

@@ -13,14 +13,19 @@ function SavedProducts() {
   }, []);
 
   // Function to remove a saved product
-  const handleRemove = async (savedProductId) => {
+  const handleRemove = async (productId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/saved-products/${savedProductId}`);
-      setSavedProducts(savedProducts.filter(product => product.id !== savedProductId));
+      await axios.delete(`http://localhost:5000/api/saved-products/3/${productId}`); // User ID in URL
+  
+      // Update UI
+      setSavedProducts(savedProducts.filter((product) => product.product_id !== productId));
+      alert("Saved product removed!");
     } catch (error) {
       console.error("Error removing saved product:", error);
     }
   };
+  
+  
 
   return (
     <Container>

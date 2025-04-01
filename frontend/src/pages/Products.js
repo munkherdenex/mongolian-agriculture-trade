@@ -15,8 +15,8 @@ function Products() {
   // Function to save a product
   const handleSave = async (productId) => {
     try {
-      await axios.post("http://localhost:5000/api/saved-products", { product_id: productId });
-      alert("Product saved successfully!"); // Show confirmation
+      await axios.post("http://localhost:5000/api/saved-products", { user_id: 3, product_id: productId });
+      alert("Product saved successfully!");
     } catch (error) {
       console.error("Error saving product:", error);
     }
