@@ -19,7 +19,6 @@ import axios from "axios";
 function App() {
   const [savedProducts, setSavedProducts] = useState([]);
 
-  // Fetch saved products from the backend
   useEffect(() => {
     const fetchSavedProducts = async () => {
       try {
@@ -46,7 +45,7 @@ function App() {
         product,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setSavedProducts((prev) => [...prev, response.data]); // Update state with newly saved product
+      setSavedProducts((prev) => [...prev, response.data]); 
     } catch (error) {
       console.error("Error saving product:", error);
     }
@@ -62,10 +61,10 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/add-product" element={<AddProduct />} /> {/* ✅ New Route */}
+          <Route path="/add-product" element={<AddProduct />} />
           <Route path="/products/:id" element={<ProductDetails />} />
 
-          {/* 🔒 Protected Routes */}
+          {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
             <Route path="/products" element={<Products handleSave={handleSave} />} />
             <Route path="/saved-products" element={<SavedProducts savedProducts={savedProducts} />} />

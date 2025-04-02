@@ -4,7 +4,6 @@ import { Typography, Container, Box, TextField, Button } from "@mui/material";
 function Contact() {
   return (
     <Container>
-      {/* Contact Header */}
       <Box sx={{ textAlign: "center", py: 4, mb: 3 }}>
         <Typography variant="h3" gutterBottom>
           Бидэнтэй холбогдох
@@ -14,7 +13,6 @@ function Contact() {
         </Typography>
       </Box>
 
-      {/* Contact Information */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
           Холбоо барих мэдээлэл
@@ -24,7 +22,6 @@ function Contact() {
         <Typography variant="body1">📍 Хаяг: Улаанбаатар, Монгол</Typography>
       </Box>
 
-      {/* Contact Form */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
           Санал хүсэлт илгээх

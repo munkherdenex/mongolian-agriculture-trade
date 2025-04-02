@@ -25,7 +25,7 @@ function Signup() {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/products"); // Redirect after signup
+      navigate("/products"); 
     } catch (error) {
       setError("Signup failed. Try again.");
       console.error("Signup error:", error);

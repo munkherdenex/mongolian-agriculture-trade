@@ -27,7 +27,7 @@ function Products() {
     e.stopPropagation();
     try {
       await axios.post("http://localhost:5000/api/saved-products", { user_id: 3, product_id: productId });
-      alert("Product saved successfully!");
+      alert("Бүтээгдэхүүнийг амжилттай хадгаллаа!");
     } catch (error) {
       console.error("Error saving product:", error);
     }
@@ -52,7 +52,7 @@ function Products() {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Products
+      Бүтээгдэхүүн
       </Typography>
       <Grid container spacing={3}>
         {products.length > 0 ? (
@@ -79,11 +79,11 @@ function Products() {
                 <CardContent>
                   <Typography variant="h6">{product.title}</Typography>
                   <Typography variant="body2" color="textSecondary">{product.description}</Typography>
-                  <Typography variant="h6" color="primary">${product.price}</Typography>
+                  <Typography variant="h6" color="primary">₮{product.price}</Typography>
                   {product.contact ? (
-                    <Typography variant="body1"><strong>Contact:</strong> {product.contact}</Typography>
+                    <Typography variant="body1"><strong>Холбоо барих:</strong> {product.contact}</Typography>
                   ) : (
-                    <Typography variant="body2" color="textSecondary">No contact provided</Typography>
+                    <Typography variant="body2" color="textSecondary">Холбоо барих дугаар байхгүй</Typography>
                   )}
                   <Button 
                     variant="contained" 
@@ -91,7 +91,7 @@ function Products() {
                     onClick={(e) => handleSave(product.id, e)}
                     style={{ marginTop: "10px" }}
                   >
-                    Save
+                    Хадгалах
                   </Button>
                 </CardContent>
               </Card>
@@ -99,7 +99,7 @@ function Products() {
           ))
         ) : (
           <Typography variant="h6" style={{ textAlign: "center", width: "100%" }}>
-            No products available.
+            Бүтээгдэхүүн байхгүй.
           </Typography>
         )}
       </Grid>

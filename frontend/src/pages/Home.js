@@ -1,10 +1,11 @@
 import React from "react";
 import { Typography, Container, Box, Button } from "@mui/material";
+import { Link } from "react-router-dom";
+
 
 function Home() {
   return (
     <Container>
-      {/* Hero Section */}
       <Box
         sx={{
           textAlign: "center",
@@ -21,12 +22,11 @@ function Home() {
           Хөдөө аж ахуйн бүтээгдэхүүнээ сурталчилж, худалдан авагчтай холбогдох
           боломжтой үнэгүй платформ.
         </Typography>
-        <Button variant="contained" color="primary" size="large">
+        <Button variant="contained" color="primary" size="large" component={Link} to="/products">
           Бүтээгдэхүүнүүдийг үзэх
         </Button>
       </Box>
 
-      {/* About Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
           Бидний тухай
@@ -39,7 +39,6 @@ function Home() {
         </Typography>
       </Box>
 
-      {/* Benefits Section */}
       <Box>
         <Typography variant="h5" gutterBottom>
           Давуу талууд

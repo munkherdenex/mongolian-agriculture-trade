@@ -2,11 +2,11 @@ import React, { useState, useContext } from "react";
 import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
-import AuthContext from "../context/AuthContext"; // ✅ Import AuthContext
+import AuthContext from "../context/AuthContext"; 
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user, logout } = useContext(AuthContext); // ✅ Access user & logout function
+  const { user, logout } = useContext(AuthContext); 
 
   return (
     <>
@@ -18,10 +18,10 @@ function Navbar() {
           <Typography variant="h6" style={{ flexGrow: 1 }}>Mongolian Agricultural Trade</Typography>
 
           <Button color="inherit" component={Link} to="/">Нүүр</Button>
-          <Button color="inherit" component={Link} to="/products">Бүтээгдэхүүн</Button>
-          <Button color="inherit" component={Link} to="/saved-products">Хадгалсан</Button>
           <Button color="inherit" component={Link} to="/about">Бидний тухай</Button> 
           <Button color="inherit" component={Link} to="/contact">Холбогдох</Button>
+          <Button color="inherit" component={Link} to="/products">Бүтээгдэхүүн</Button>
+          <Button color="inherit" component={Link} to="/saved-products">Хадгалсан</Button>
           <Button color="inherit" component={Link} to="/add-product">Нэмэх</Button> 
  
 
@@ -30,7 +30,7 @@ function Navbar() {
               <Typography variant="body1" style={{ margin: "0 10px" }}>
                 Hi, {user.name}
               </Typography>
-              <Button color="inherit" onClick={logout}>Logout</Button>
+              <Button color="inherit" onClick={logout}>Гарах</Button>
             </>
           ) : (
             <>
@@ -41,7 +41,6 @@ function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer */}
       <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)}>
         <List>
           <ListItem button component={Link} to="/" onClick={() => setMobileOpen(false)}>

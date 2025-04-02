@@ -21,7 +21,7 @@ const AddProduct = () => {
     const file = e.target.files[0];
     setImage(file);
     
-    // Show image preview
+    // image preview
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result);
@@ -32,19 +32,24 @@ const AddProduct = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Ensure price is formatted correctly (remove .00 if not needed)
+    const formattedPrice = parseFloat(formData.price);
+    
     const data = new FormData();
-    Object.keys(formData).forEach((key) => data.append(key, formData[key]));
+    Object.keys(formData).forEach((key) => {
+      data.append(key, key === "price" ? formattedPrice : formData[key]);
+    });
     if (image) data.append("image", image);
-
-    console.log("Submitting form:", Object.fromEntries(data.entries())); // ✅ Debugging
-
+  
+    console.log("Submitting form:", Object.fromEntries(data.entries())); 
+  
     try {
       const response = await axios.post("http://localhost:5000/api/products", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("Product added:", response.data);
       alert("Бараа амжилттай нэмэгдлээ!");
-
+  
       // Reset form after submission
       setFormData({ title: "", description: "", price: "", contact: "", location: "" });
       setImage(null);
@@ -54,6 +59,7 @@ const AddProduct = () => {
       alert("Алдаа гарлаа. Та дахин оролдоно уу!");
     }
   };
+  
 
   const locations = [
     "Улаанбаатар", "Архангай", "Баян-Өлгий", "Баянхонгор", "Булган", "Говь-Алтай", "Говьсүмбэр", "Дархан-Уул",
@@ -72,7 +78,7 @@ const AddProduct = () => {
         <TextField fullWidth label="Барааны нэр" name="title" value={formData.title} onChange={handleChange} required margin="normal" />
         <TextField fullWidth label="Тайлбар" name="description" value={formData.description} onChange={handleChange} required margin="normal" multiline rows={3} />
         <TextField fullWidth label="Үнэ" name="price" type="number" value={formData.price} onChange={handleChange} required margin="normal" />
-        <TextField fullWidth label="Holboo barih" name="contact" value={formData.contact} onChange={handleChange} required margin="normal"/>
+        <TextField fullWidth label="Холбоо барих" name="contact" value={formData.contact} onChange={handleChange} required margin="normal"/>
         <TextField select fullWidth label="Байршил" name="location" value={formData.location} onChange={handleChange} required margin="normal">
           {locations.map((loc) => (
             <MenuItem key={loc} value={loc}>

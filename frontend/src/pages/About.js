@@ -4,7 +4,6 @@ import { Typography, Container, Box } from "@mui/material";
 function About() {
   return (
     <Container>
-      {/* About Header */}
       <Box sx={{ textAlign: "center", py: 4, mb: 3 }}>
         <Typography variant="h3" gutterBottom>
           Бидний тухай
@@ -15,7 +14,6 @@ function About() {
         </Typography>
       </Box>
 
-      {/* Mission Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
           Эрхэм зорилго
@@ -27,7 +25,6 @@ function About() {
         </Typography>
       </Box>
 
-      {/* Vision Section */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h5" gutterBottom>
           Алсын хараа
@@ -38,7 +35,6 @@ function About() {
         </Typography>
       </Box>
 
-      {/* Why Choose Us Section */}
       <Box>
         <Typography variant="h5" gutterBottom>
           Яагаад бид?

@@ -2,28 +2,26 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AuthContext from "../context/AuthContext";
-import { TextField, Button, Container, Typography, Box, Alert } from "@mui/material"; // ✅ MUI Components
+import { TextField, Button, Container, Typography, Box, Alert } from "@mui/material"; 
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // ✅ Access login function
+  const { login } = useContext(AuthContext); 
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError(""); 
 
     try {
       const response = await axios.post("http://localhost:5000/api/auth/login", { email, password });
 
       const { token, user } = response.data;
 
-      // ✅ Use AuthContext login function
       login(token, user);
 
-      // ✅ Redirect to products page
       navigate("/products");
     } catch (error) {
       setError("Invalid credentials. Please try again.");

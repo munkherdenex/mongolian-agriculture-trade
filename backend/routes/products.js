@@ -5,17 +5,16 @@ const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../cloudinary");
 
-// 📌 Multer Cloudinary Storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "products", // Cloudinary folder name
+    folder: "products", 
     allowed_formats: ["jpg", "png", "jpeg"],
   },
 });
 const upload = multer({ storage });
 
-// 📌 1. Get All Products
+// Get All Products
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM products ORDER BY created_at DESC");
@@ -26,7 +25,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 📌 2. Get a Single Product by ID (Fix: Removed duplicate)
+// Get a Single Product by ID (Fix: Removed duplicate)
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -39,7 +38,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// 📌 3. Add a New Product with Image Upload (Fix: Added `contact`)
+// Add a New Product with Image Upload
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     console.log("Received data:", req.body); 
@@ -48,7 +47,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     const { title, description, price, location, contact } = req.body;
     const imageUrl = req.file ? req.file.path : null;
 
-    console.log("Extracted fields:", { title, description, price, location, contact, imageUrl }); // ✅ Debug fields
+    console.log("Extracted fields:", { title, description, price, location, contact, imageUrl });
 
     const result = await pool.query(
       "INSERT INTO products (title, description, price, location, image_url, contact) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
@@ -64,7 +63,7 @@ router.post("/", upload.single("image"), async (req, res) => {
 
 
 
-// 📌 4. Delete a Product
+// Delete a Product
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;

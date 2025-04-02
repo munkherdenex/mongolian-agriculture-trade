@@ -17,4 +17,42 @@ body {
   .card:hover {
     transform: scale(1.05);
   }
+
+  /* Saved Products Page Styles */
+.saved-products-container {
+  padding: 20px;
+}
+
+.saved-products-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.saved-products-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.saved-products-card img {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+}
+
+.saved-products-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.remove-button {
+  margin-top: 10px;
+  align-self: center;
+  width: 100%;
+}
+
   
