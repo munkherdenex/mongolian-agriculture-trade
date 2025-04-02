@@ -23,7 +23,7 @@ function SavedProducts() {
     } catch (error) {
       console.error("Error removing saved product:", error);
     }
-  };
+  };  
   
   
 

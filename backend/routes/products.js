@@ -26,37 +26,43 @@ router.get("/", async (req, res) => {
   }
 });
 
-// 📌 2. Get a Single Product by ID
+// 📌 2. Get a Single Product by ID (Fix: Removed duplicate)
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query("SELECT * FROM products WHERE id = $1", [id]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-    res.json(result.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
+    const product = await pool.query("SELECT * FROM products WHERE id = $1", [id]);
+    if (product.rows.length === 0) return res.status(404).json({ message: "Product not found" });
+    res.json(product.rows[0]);
+  } catch (error) {
+    console.error("Error fetching product details:", error);
+    res.status(500).send("Server error");
   }
 });
 
-// 📌 3. Add a New Product with Image Upload
+// 📌 3. Add a New Product with Image Upload (Fix: Added `contact`)
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    const { title, description, price, location } = req.body;
-    const imageUrl = req.file ? req.file.path : null; // Store image URL if uploaded
+    console.log("Received data:", req.body); 
+    console.log("Received file:", req.file); 
+
+    const { title, description, price, location, contact } = req.body;
+    const imageUrl = req.file ? req.file.path : null;
+
+    console.log("Extracted fields:", { title, description, price, location, contact, imageUrl }); // ✅ Debug fields
 
     const result = await pool.query(
-      "INSERT INTO products (title, description, price, location, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [title, description, price, location, imageUrl]
+      "INSERT INTO products (title, description, price, location, image_url, contact) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [title, description, price, location, imageUrl, contact]
     );
+
     res.json(result.rows[0]);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
 });
+
+
 
 // 📌 4. Delete a Product
 router.delete("/:id", async (req, res) => {

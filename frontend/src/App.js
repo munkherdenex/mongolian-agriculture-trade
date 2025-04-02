@@ -1,9 +1,8 @@
-// src/App.js
 import './App.css';
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
+import PrivateRoute from "./components/PrivateRoute"; 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
@@ -12,7 +11,8 @@ import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import SavedProducts from "./pages/SavedProducts";
 import Navbar from "./components/Navbar";
-import AddProduct from "./pages/AddProduct"; // ✅ Import AddProduct
+import AddProduct from "./pages/AddProduct"; 
+import ProductDetails from './pages/ProductDetails';
 import axios from "axios";
 
 
@@ -63,6 +63,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/add-product" element={<AddProduct />} /> {/* ✅ New Route */}
+          <Route path="/products/:id" element={<ProductDetails />} />
 
           {/* 🔒 Protected Routes */}
           <Route element={<PrivateRoute />}>

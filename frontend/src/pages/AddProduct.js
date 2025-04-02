@@ -8,6 +8,7 @@ const AddProduct = () => {
     description: "",
     price: "",
     location: "",
+    contact: "",
   });
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -45,7 +46,7 @@ const AddProduct = () => {
       alert("Бараа амжилттай нэмэгдлээ!");
 
       // Reset form after submission
-      setFormData({ title: "", description: "", price: "", location: "" });
+      setFormData({ title: "", description: "", price: "", contact: "", location: "" });
       setImage(null);
       setPreview(null);
     } catch (error) {
@@ -71,6 +72,7 @@ const AddProduct = () => {
         <TextField fullWidth label="Барааны нэр" name="title" value={formData.title} onChange={handleChange} required margin="normal" />
         <TextField fullWidth label="Тайлбар" name="description" value={formData.description} onChange={handleChange} required margin="normal" multiline rows={3} />
         <TextField fullWidth label="Үнэ" name="price" type="number" value={formData.price} onChange={handleChange} required margin="normal" />
+        <TextField fullWidth label="Holboo barih" name="contact" value={formData.contact} onChange={handleChange} required margin="normal"/>
         <TextField select fullWidth label="Байршил" name="location" value={formData.location} onChange={handleChange} required margin="normal">
           {locations.map((loc) => (
             <MenuItem key={loc} value={loc}>
