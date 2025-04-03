@@ -17,11 +17,39 @@ const upload = multer({ storage });
 // Get All Products
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM products ORDER BY created_at DESC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
+    const { search, category, minPrice, maxPrice, location } = req.query;
+    
+    let query = "SELECT * FROM products WHERE 1=1";
+    let values = [];
+
+    if (search) {
+      query += " AND LOWER(name) LIKE LOWER($1)";
+      values.push(`%${search}%`);
+    }
+    if (category) {
+      query += ` AND category = $${values.length + 1}`;
+      values.push(category);
+    }
+    if (minPrice) {
+      query += ` AND price >= $${values.length + 1}`;
+      values.push(minPrice);
+    }
+    if (maxPrice) {
+      query += ` AND price <= $${values.length + 1}`;
+      values.push(maxPrice);
+    }
+    if (location) {
+      query += ` AND location = $${values.length + 1}`;
+      values.push(location);
+    }
+
+    query += " ORDER BY created_at DESC";
+
+    const { rows } = await pool.query(query, values);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
