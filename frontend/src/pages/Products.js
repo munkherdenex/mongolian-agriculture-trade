@@ -43,13 +43,23 @@ function Products() {
 
   const handleSave = async (productId, e) => {
     e.stopPropagation();
+    const user = JSON.parse(localStorage.getItem("user")); // 👈 Get logged-in user info
+    if (!user) {
+      alert("Нэвтэрч орно уу.");
+      return;
+    }
+  
     try {
-      await axios.post("http://localhost:5000/api/saved-products", { user_id: 3, product_id: productId });
+      await axios.post("http://localhost:5000/api/saved-products", {
+        user_id: user.id, // 👈 Use current user's ID
+        product_id: productId
+      });
       alert("Бүтээгдэхүүнийг амжилттай хадгаллаа!");
     } catch (error) {
       console.error("Error saving product:", error);
     }
   };
+  
 
   if (loading) {
     return (

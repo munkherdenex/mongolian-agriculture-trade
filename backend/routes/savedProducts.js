@@ -3,18 +3,25 @@ const router = express.Router();
 const pool = require("../db");
 
 // Get all saved products
-router.get("/", async (req, res) => {
+router.get("/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+
   try {
-    const savedProducts = await pool.query(`
+    const savedProducts = await pool.query(
+      `
       SELECT products.* FROM saved_products 
       JOIN products ON saved_products.product_id = products.id
-    `);
+      WHERE saved_products.user_id = $1
+      `,
+      [user_id]
+    );
     res.json(savedProducts.rows);
   } catch (error) {
     console.error("Error fetching saved products:", error);
     res.status(500).send("Server error");
   }
 });
+
 
 // Save a product
 router.post("/", async (req, res) => {

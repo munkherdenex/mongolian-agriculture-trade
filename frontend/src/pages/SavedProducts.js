@@ -7,20 +7,35 @@ function SavedProducts() {
   const [savedProducts, setSavedProducts] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/saved-products")
-      .then((response) => setSavedProducts(response.data))
-      .catch((error) => console.error("Error fetching saved products:", error));
+    const fetchSavedProducts = async () => {
+      const user = JSON.parse(localStorage.getItem("user")); // 👈 Get current user
+      if (!user) return;
+  
+      try {
+        const response = await axios.get(`http://localhost:5000/api/saved-products/${user.id}`);
+        setSavedProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching saved products:", error);
+      }
+    };
+  
+    fetchSavedProducts();
   }, []);
+  
 
   const handleRemove = async (productId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return;
+  
     try {
-      await axios.delete(`http://localhost:5000/api/saved-products/3/${productId}`);
-      setSavedProducts(savedProducts.filter((product) => product.product_id !== productId));
+      await axios.delete(`http://localhost:5000/api/saved-products/${user.id}/${productId}`);
+      setSavedProducts(savedProducts.filter((product) => product.id !== productId));
       alert("Хадгалсан бүтээгдэхүүнийг устгасан");
     } catch (error) {
       console.error("Error removing saved product:", error);
     }
   };
+  
 
   return (
     <Container className="saved-products-container">
@@ -29,7 +44,7 @@ function SavedProducts() {
       </Typography>
       <Grid container spacing={3}>
         {savedProducts.length === 0 ? (
-          <Typography>Одоогоор хадгалсан бүтээгдэхүүн алга.</Typography>
+          <Typography style={{ marginTop: "30px" }}>Одоогоор хадгалсан бүтээгдэхүүн алга.</Typography>
         ) : (
           savedProducts.map((product) => (
             <Grid item key={product.id} xs={12} sm={6} md={4}>
