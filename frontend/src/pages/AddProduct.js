@@ -31,17 +31,24 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Ensure price is formatted correctly (remove .00 if not needed)
+  
     const formattedPrice = parseFloat(formData.price);
-    
+    const user = JSON.parse(localStorage.getItem("user")); // ✅ Get logged-in user
+  
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
       data.append(key, key === "price" ? formattedPrice : formData[key]);
     });
     if (image) data.append("image", image);
   
-    console.log("Submitting form:", Object.fromEntries(data.entries())); 
+    if (user && user.id) {
+      data.append("user_id", user.id); // ✅ Send user_id to backend
+    } else {
+      alert("Нэвтэрсэн хэрэглэгч олдсонгүй. Та дахин нэвтэрнэ үү.");
+      return;
+    }
+  
+    console.log("Submitting form:", Object.fromEntries(data.entries()));
   
     try {
       const response = await axios.post("http://localhost:5000/api/products", data, {
@@ -50,7 +57,6 @@ const AddProduct = () => {
       console.log("Product added:", response.data);
       alert("Бараа амжилттай нэмэгдлээ!");
   
-      // Reset form after submission
       setFormData({ title: "", description: "", price: "", contact: "", location: "" });
       setImage(null);
       setPreview(null);
@@ -59,6 +65,7 @@ const AddProduct = () => {
       alert("Алдаа гарлаа. Та дахин оролдоно уу!");
     }
   };
+  
   
 
   const locations = [

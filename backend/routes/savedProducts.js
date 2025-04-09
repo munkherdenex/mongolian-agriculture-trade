@@ -9,8 +9,12 @@ router.get("/:user_id", async (req, res) => {
   try {
     const savedProducts = await pool.query(
       `
-      SELECT products.* FROM saved_products 
-      JOIN products ON saved_products.product_id = products.id
+      SELECT 
+        products.*, 
+        users.name AS poster_name 
+      FROM saved_products 
+      JOIN products ON saved_products.product_id = products.id 
+      JOIN users ON products.user_id = users.id 
       WHERE saved_products.user_id = $1
       `,
       [user_id]

@@ -144,6 +144,9 @@ function Products() {
                   ) : (
                     <Typography variant="body2" color="textSecondary">Холбоо барих дугаар байхгүй</Typography>
                   )}
+                  <Typography variant="body2" color="textSecondary">
+                    Нийтэлсэн: {product.poster_name}
+                  </Typography>
                   <Button 
                     variant="contained" 
                     color="primary" 

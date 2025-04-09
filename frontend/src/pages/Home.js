@@ -2,7 +2,6 @@ import React from "react";
 import { Typography, Container, Box, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 
-
 function Home() {
   return (
     <Container>
@@ -22,7 +21,19 @@ function Home() {
           Хөдөө аж ахуйн бүтээгдэхүүнээ сурталчилж, худалдан авагчтай холбогдох
           боломжтой үнэгүй платформ.
         </Typography>
-        <Button variant="contained" color="primary" size="large" component={Link} to="/products">
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "#6A994E", // Custom button color
+            color: "white", // Text color
+            '&:hover': {
+              backgroundColor: "#588b47", // Darker shade on hover
+            },
+          }}
+          size="large"
+          component={Link}
+          to="/products"
+        >
           Бүтээгдэхүүнүүдийг үзэх
         </Button>
       </Box>

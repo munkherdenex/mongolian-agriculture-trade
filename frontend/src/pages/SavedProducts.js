@@ -59,6 +59,9 @@ function SavedProducts() {
                   <Typography variant="h6">{product.title}</Typography>
                   <Typography color="textSecondary">{product.description}</Typography>
                   <Typography variant="h6">${product.price}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Нийтэлсэн: {product.poster_name}
+                  </Typography>
                   <Button 
                     variant="contained" 
                     color="secondary" 

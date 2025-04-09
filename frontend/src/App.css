@@ -55,4 +55,18 @@ body {
   width: 100%;
 }
 
-  
+/* Smooth link hover */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Consistent button spacing */
+.MuiButton-root {
+  text-transform: none;
+  font-weight: 500;
+}

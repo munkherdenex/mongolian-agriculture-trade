@@ -67,6 +67,9 @@ const ProductDetails = () => {
           <Typography variant="h6" fontWeight="bold">
             Холбоо барих: <Typography component="span">{product.contact || "Байхгүй"}</Typography>
           </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Нийтэлсэн: {product.poster_name}
+          </Typography>
         </CardContent>
       </Card>
     </Container>

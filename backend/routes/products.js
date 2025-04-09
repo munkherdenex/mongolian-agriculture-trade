@@ -19,7 +19,12 @@ router.get("/", async (req, res) => {
   try {
     const { search, category, minPrice, maxPrice, location } = req.query;
     
-    let query = "SELECT * FROM products WHERE 1=1";
+    let query = `
+      SELECT products.*, users.name AS poster_name
+      FROM products
+      JOIN users ON products.user_id = users.id
+      WHERE 1=1
+    `;
     let values = [];
 
     if (search) {
@@ -53,11 +58,17 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a Single Product by ID (Fix: Removed duplicate)
+// Get a Single Product by ID 
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await pool.query("SELECT * FROM products WHERE id = $1", [id]);
+    const product = await pool.query(
+      `SELECT products.*, users.name AS poster_name 
+       FROM products 
+       JOIN users ON products.user_id = users.id 
+       WHERE products.id = $1`, 
+      [id]
+    );
     if (product.rows.length === 0) return res.status(404).json({ message: "Product not found" });
     res.json(product.rows[0]);
   } catch (error) {
@@ -72,14 +83,14 @@ router.post("/", upload.single("image"), async (req, res) => {
     console.log("Received data:", req.body); 
     console.log("Received file:", req.file); 
 
-    const { title, description, price, location, contact } = req.body;
+    const { title, description, price, location, contact, user_id } = req.body;
     const imageUrl = req.file ? req.file.path : null;
 
     console.log("Extracted fields:", { title, description, price, location, contact, imageUrl });
 
     const result = await pool.query(
-      "INSERT INTO products (title, description, price, location, image_url, contact) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [title, description, price, location, imageUrl, contact]
+      "INSERT INTO products (title, description, price, location, image_url, contact, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [title, description, price, location, imageUrl, contact, user_id]
     );
 
     res.json(result.rows[0]);
