@@ -40,8 +40,19 @@ function Signup() {
         <TextField label="Нэр" fullWidth margin="normal" value={name} onChange={(e) => setName(e.target.value)} required />
         <TextField label="Имэйл" type="email" fullWidth margin="normal" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <TextField label="Нууц үг" type="password" fullWidth margin="normal" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-        Бүртгүүлэх
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{
+            backgroundColor: "#6A994E",
+            color: "white",
+            '&:hover': {
+              backgroundColor: "#588b47",
+            },
+          }}
+        >
+          Бүртгүүлэх
         </Button>
       </form>
     </Container>

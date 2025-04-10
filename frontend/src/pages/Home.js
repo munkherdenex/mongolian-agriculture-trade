@@ -72,6 +72,34 @@ function Home() {
           </li>
         </ul>
       </Box>
+      <Box sx={{ display: "flex", alignItems: "center", py: 5, bgcolor: "#e0f7fa", borderRadius: 2, mb: 4 }}>
+  <Container sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+    <Box sx={{ flex: 1 }}>
+      <Typography variant="h4" gutterBottom>
+      Хөдөө аж ахуйн бизнесээ хялбархан хөгжүүлээрэй
+      </Typography>
+      <Typography variant="h6" color="textSecondary" paragraph>
+      Манай платформд үнэ төлбөргүй нэгдэж, бүтээгдэхүүнээ байршуулж, худалдан авагчидтай холбогдож, зах зээлийн хүрээгээ хялбархан өргөжүүлээрэй.
+      </Typography>
+      <Button
+      component={Link} to="/signup"
+        variant="contained"
+        sx={{
+          backgroundColor: "#6A994E", 
+          color: "white", 
+          '&:hover': { backgroundColor: "#588b47" },
+        }}
+        size="large"
+      >
+        Бүртгүүлэх
+      </Button>
+    </Box>
+    <Box sx={{ flex: 1 }}>
+      <img src="/agriculture.png" alt="Agriculture" style={{ width: "100%", borderRadius: "8px" }} />
+    </Box>
+  </Container>
+</Box>
+
     </Container>
   );
 }

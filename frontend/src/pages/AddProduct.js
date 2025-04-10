@@ -95,7 +95,19 @@ const AddProduct = () => {
         </TextField>
 
         {/* Image Upload & Preview */}
-        <Button variant="contained" component="label" fullWidth sx={{ mt: 2 }}>
+        <Button
+          variant="contained"
+          component="label"
+          fullWidth
+          sx={{
+            mt: 2,
+            backgroundColor: "#6A994E",
+            color: "white",
+            '&:hover': {
+              backgroundColor: "#588b47",
+            },
+          }}
+        >
           Зураг оруулах
           <input type="file" hidden accept="image/*" onChange={handleImageChange} />
         </Button>
@@ -107,9 +119,22 @@ const AddProduct = () => {
           </Box>
         )}
 
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          sx={{
+            mt: 2,
+            backgroundColor: "#6A994E",
+            color: "white",
+            '&:hover': {
+              backgroundColor: "#588b47",
+            },
+          }}
+        >
           Нэмэх
         </Button>
+
       </form>
     </Container>
   );

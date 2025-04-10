@@ -107,7 +107,17 @@ function Products() {
           ))}
         </TextField>
 
-        <Button variant="contained" color="primary" onClick={handleSearch}>
+        <Button
+          variant="contained"
+          onClick={handleSearch}
+          sx={{
+            backgroundColor: "#6A994E",
+            color: "white",
+            '&:hover': {
+              backgroundColor: "#588b47",
+            },
+         }}
+        >
           Хайх
         </Button>
       </div>
@@ -147,11 +157,17 @@ function Products() {
                   <Typography variant="body2" color="textSecondary">
                     Нийтэлсэн: {product.poster_name}
                   </Typography>
-                  <Button 
-                    variant="contained" 
-                    color="primary" 
+                  <Button
+                    variant="contained"
                     onClick={(e) => handleSave(product.id, e)}
-                    style={{ marginTop: "10px" }}
+                    sx={{
+                      mt: 1,
+                      backgroundColor: "#6A994E",
+                      color: "white",
+                      '&:hover': {
+                        backgroundColor: "#588b47",
+                      },
+                    }}
                   >
                     Хадгалах
                   </Button>

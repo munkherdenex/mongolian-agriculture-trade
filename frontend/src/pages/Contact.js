@@ -90,7 +90,19 @@ function Contact() {
             onChange={handleChange}
             required
           />
-          <Button type="submit" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            sx={{
+              mt: 2,
+              backgroundColor: "#6A994E",
+              color: "white",
+              '&:hover': {
+                backgroundColor: "#588b47",
+              },
+            }}
+          >
             Илгээх
           </Button>
         </form>

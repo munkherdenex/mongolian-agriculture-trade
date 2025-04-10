@@ -59,9 +59,22 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            fullWidth
+            sx={{
+              mt: 2,
+              backgroundColor: "#6A994E",
+              color: "white",
+              '&:hover': {
+                backgroundColor: "#588b47",
+              },
+           }}
+          >
           Нэвтрэх
           </Button>
+
         </form>
       </Box>
     </Container>
