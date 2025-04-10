@@ -70,3 +70,55 @@ a:hover {
   text-transform: none;
   font-weight: 500;
 }
+
+/* About.css */
+
+.about-container {
+  padding: 60px 20px;
+  background-color: #f8f9fa;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.about-header h3 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.about-header h6 {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.about-section {
+  margin-bottom: 50px;
+}
+
+.about-section .MuiPaper-root {
+  transition: box-shadow 0.3s ease;
+}
+
+.about-section .MuiPaper-root:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.about-footer {
+  text-align: center;
+  margin-top: 60px;
+  font-style: italic;
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .about-header h3 {
+    font-size: 2rem;
+  }
+
+  .about-header h6 {
+    font-size: 1rem;
+  }
+}

@@ -1,15 +1,24 @@
 import React from "react";
-import { Container, Typography } from "@mui/material";
+import { Container, Typography, Box } from "@mui/material";
 
 function Footer() {
   return (
-    <footer style={{ marginTop: "auto", padding: "20px", backgroundColor: "#f1f1f1" }}>
+    <Box
+      component="footer"
+      sx={{
+        mt: "auto",
+        py: 2,
+        backgroundColor: "#f1f1f1",
+        textAlign: "center",
+        width: "100%",
+      }}
+    >
       <Container>
-        <Typography variant="body1" align="center">
-          © 2025 Mongolian Agricultural Trade. All Rights Reserved.
+        <Typography variant="body2" color="textSecondary">
+          © 2025 AgroMongol
         </Typography>
       </Container>
-    </footer>
+    </Box>
   );
 }
 

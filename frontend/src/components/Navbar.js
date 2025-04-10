@@ -37,7 +37,7 @@ function Navbar() {
       <AppBar position="static" sx={{ backgroundColor: "#4E944F" }}>
 
 
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between", minHeight: 72 }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {isMobile && (
               <IconButton
@@ -49,9 +49,19 @@ function Navbar() {
                 <MenuIcon />
               </IconButton>
             )}
-            <Typography variant="h6" component={Link} to="/" sx={{ textDecoration: "none", color: "white" }}>
-              Mongolian Agricultural Trade
-            </Typography>
+              <img
+                src="/AgroMongol.png"
+                  alt="AgroMongol Logo"
+                  style={{ width: 55, height: 55, marginRight: 12 }}
+                />
+                <Typography
+                  variant="h6"
+                  component={Link}
+                  to="/"
+                  sx={{ textDecoration: "none", color: "white", fontWeight: 600 }}
+                >
+                  AgroMongol
+                </Typography>
           </Box>
 
           {!isMobile && (

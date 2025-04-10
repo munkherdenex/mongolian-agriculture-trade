@@ -1,6 +1,11 @@
 import React from "react";
 import { Typography, Container, Box, Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ConnectWithoutContactIcon from "@mui/icons-material/ConnectWithoutContact";
+import Footer from "../components/Footer"; 
+
 
 function Home() {
   return (
@@ -72,7 +77,7 @@ function Home() {
           </li>
         </ul>
       </Box>
-      <Box sx={{ display: "flex", alignItems: "center", py: 5, bgcolor: "#e0f7fa", borderRadius: 2, mb: 4 }}>
+      <Box sx={{ display: "flex", alignItems: "center", py: 5, bgcolor: "#f9f9f9", borderRadius: 2, mb: 4 }}>
   <Container sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
     <Box sx={{ flex: 1 }}>
       <Typography variant="h4" gutterBottom>
@@ -99,8 +104,36 @@ function Home() {
     </Box>
   </Container>
 </Box>
+<Box sx={{ py: 6, textAlign: "center", bgcolor: "#f9f9f9", borderRadius: 2 }}>
+  <Typography variant="h4" gutterBottom>Хэрхэн ажилладаг вэ?</Typography>
+  <Typography variant="body1" color="textSecondary" sx={{ mb: 4 }}>
+    Та гурван хялбар алхмаар бүтээгдэхүүнээ борлуулах боломжтой.
+  </Typography>
 
+  <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-around", gap: 4, px: 2 }}>
+    <Box sx={{ flex: 1, maxWidth: 300, mx: "auto" }}>
+      <HowToRegIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+      <Typography variant="h6" gutterBottom>1. Бүртгүүлэх</Typography>
+      <Typography variant="body2">Хялбар бүртгэл хийж, өөрийн ферм эсвэл компанийн мэдээллийг оруулна.</Typography>
+    </Box>
+
+    <Box sx={{ flex: 1, maxWidth: 300, mx: "auto" }}>
+      <AddShoppingCartIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+      <Typography variant="h6" gutterBottom>2. Бүтээгдэхүүн нэмэх</Typography>
+      <Typography variant="body2">Борлуулах бүтээгдэхүүнээ зураг, үнэ, тайлбартайгаар нэмнэ.</Typography>
+    </Box>
+
+    <Box sx={{ flex: 1, maxWidth: 300, mx: "auto" }}>
+      <ConnectWithoutContactIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+      <Typography variant="h6" gutterBottom>3. Худалдан авагчтай холбогдох</Typography>
+      <Typography variant="body2">Худалдан авагч таны бүтээгдэхүүнийг сонирхож, шууд холбогдоно.</Typography>
+    </Box>
+  </Box>
+</Box>
+
+<Footer />
     </Container>
+    
   );
 }
 

@@ -1,5 +1,6 @@
 import React from "react";
-import { Typography, Container, Box } from "@mui/material";
+import { Typography, Container, Box, Grid, Paper } from "@mui/material";
+import "../App.css";
 
 function About() {
   return (
@@ -35,27 +36,28 @@ function About() {
         </Typography>
       </Box>
 
-      <Box>
-        <Typography variant="h5" gutterBottom>
-          Яагаад бид?
-        </Typography>
-        <ul>
-          <li>
-            <Typography variant="body1">
-              🚜 Фермерүүдэд бүтээгдэхүүнээ хялбар борлуулах боломж
-            </Typography>
-          </li>
-          <li>
-            <Typography variant="body1">
-              🤝 Шударга, найдвартай арилжааны орчин
-            </Typography>
-          </li>
-          <li>
-            <Typography variant="body1">
-              🌍 Хөдөө аж ахуйн салбарын өсөлтийг дэмжих дижитал шийдэл
-            </Typography>
-          </li>
-        </ul>
+      <Box className="about-section" sx={{ mt: 5 }}>
+        <Typography variant="h4" gutterBottom>Яагаад бид?</Typography>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={4}>
+            <Paper elevation={2} sx={{ p: 2 }}>
+              <Typography variant="h6">🚜 Хялбар борлуулалт</Typography>
+              <Typography variant="body2">Фермерүүдэд бүтээгдэхүүнээ онлайнд байршуулж, борлуулах бүрэн боломж.</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Paper elevation={2} sx={{ p: 2 }}>
+              <Typography variant="h6">📈 Зах зээлийн өргөтгөл</Typography>
+              <Typography variant="body2">Шинэ харилцагчидтай танилцаж, бизнесээ хөгжүүлэх боломж.</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <Paper elevation={2} sx={{ p: 2 }}>
+              <Typography variant="h6">🌍 Нийгэмд ээлтэй</Typography>
+              <Typography variant="body2">Бид хөдөө нутгийн фермерүүдийг дэмжсэн нийгмийн сайн талтай шийдэл санал болгодог.</Typography>
+            </Paper>
+          </Grid>
+        </Grid>
       </Box>
     </Container>
   );
