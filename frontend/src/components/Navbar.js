@@ -16,6 +16,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import UserMenu from "./UserMenu";
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -35,9 +36,8 @@ function Navbar() {
   return (
     <>
       <AppBar position="static" sx={{ backgroundColor: "#4E944F" }}>
-
-
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", minHeight: 72 }}>
+          {/* Left side logo and menu */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {isMobile && (
               <IconButton
@@ -49,23 +49,24 @@ function Navbar() {
                 <MenuIcon />
               </IconButton>
             )}
-              <img
-                src="/AgroMongol.png"
-                  alt="AgroMongol Logo"
-                  style={{ width: 55, height: 55, marginRight: 12 }}
-                />
-                <Typography
-                  variant="h6"
-                  component={Link}
-                  to="/"
-                  sx={{ textDecoration: "none", color: "white", fontWeight: 600 }}
-                >
-                  AgroMongol
-                </Typography>
+            <img
+              src="/AgroMongol.png"
+              alt="AgroMongol Logo"
+              style={{ width: 55, height: 55, marginRight: 12 }}
+            />
+            <Typography
+              variant="h6"
+              component={Link}
+              to="/"
+              sx={{ textDecoration: "none", color: "white", fontWeight: 600 }}
+            >
+              AgroMongol
+            </Typography>
           </Box>
 
+          {/* Desktop Menu */}
           {!isMobile && (
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               {menuItems.map((item) => (
                 <Button
                   key={item.text}
@@ -78,12 +79,7 @@ function Navbar() {
                 </Button>
               ))}
               {user ? (
-                <>
-                  <Typography variant="body1" sx={{ marginX: 1 }}>
-                    Сайн байна уу, {user.name}
-                  </Typography>
-                  <Button color="inherit" onClick={logout}>Гарах</Button>
-                </>
+                <UserMenu user={user} onLogout={logout} />
               ) : (
                 <>
                   <Button color="inherit" component={Link} to="/login">Нэвтрэх</Button>
@@ -108,6 +104,9 @@ function Navbar() {
               <>
                 <ListItem>
                   <ListItemText primary={`Сайн байна уу, ${user.name}`} />
+                </ListItem>
+                <ListItem button component={Link} to="/my-products">
+                  <ListItemText primary="Миний бүтээгдэхүүн" />
                 </ListItem>
                 <ListItem button onClick={logout}>
                   <ListItemText primary="Гарах" />

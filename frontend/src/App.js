@@ -14,6 +14,7 @@ import Navbar from "./components/Navbar";
 import AddProduct from "./pages/AddProduct"; 
 import ProductDetails from './pages/ProductDetails';
 import axios from "axios";
+import MyProducts from "./pages/MyProducts";
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/my-products" element={<MyProducts />} />
 
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>

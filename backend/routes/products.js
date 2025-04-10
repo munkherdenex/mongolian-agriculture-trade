@@ -4,6 +4,8 @@ const pool = require("../db");
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../cloudinary");
+const { authenticateUser } = require('../middleware/auth');
+
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
@@ -100,6 +102,20 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
+// routes/products.js 
+router.get('/my-products', authenticateUser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const products = await pool.query(
+      'SELECT * FROM products WHERE user_id = $1',
+      [userId]
+    );
+    res.json(products.rows);
+  } catch (err) {
+    console.error("Error fetching user's products:", err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 
 // Delete a Product
