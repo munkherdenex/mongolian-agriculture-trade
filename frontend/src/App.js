@@ -5,6 +5,7 @@ import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute"; 
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ChatPage from "./pages/ChatPage";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -62,6 +63,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/chat" element={<ChatPage />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/my-products" element={<MyProducts />} />
