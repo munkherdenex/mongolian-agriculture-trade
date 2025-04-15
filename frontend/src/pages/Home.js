@@ -1,22 +1,24 @@
 import React from "react";
-import { Typography, Container, Box, Button } from "@mui/material";
+import { Typography, Box, Button, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ConnectWithoutContactIcon from "@mui/icons-material/ConnectWithoutContact";
-import Footer from "../components/Footer"; 
-
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import MoneyOffIcon from '@mui/icons-material/MoneyOff';
+import Footer from "../components/Footer";
 
 function Home() {
   return (
-    <Container>
+    <Box sx={{ width: "100%", overflowX: "hidden" }}>
+      {/* Hero Section */}
       <Box
         sx={{
+          width: "100%",
+          py: 8,
+          backgroundColor: "#f5f5f5",
           textAlign: "center",
-          py: 5,
-          bgcolor: "#f5f5f5",
-          borderRadius: 2,
-          mb: 4,
         }}
       >
         <Typography variant="h3" gutterBottom>
@@ -27,113 +29,168 @@ function Home() {
           боломжтой үнэгүй платформ.
         </Typography>
         <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#6A994E", // Custom button color
-            color: "white", // Text color
-            '&:hover': {
-              backgroundColor: "#588b47", // Darker shade on hover
-            },
-          }}
-          size="large"
           component={Link}
           to="/products"
+          variant="contained"
+          size="large"
+          sx={{
+            backgroundColor: "#6A994E",
+            color: "white",
+            mt: 2,
+            '&:hover': {
+              backgroundColor: "#588b47",
+            },
+          }}
         >
           Бүтээгдэхүүнүүдийг үзэх
         </Button>
       </Box>
 
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Бидний тухай
-        </Typography>
-        <Typography variant="body1">
-          Бид Монголын хөдөө аж ахуйн худалдааг хялбарчилж, фермерүүд болон
-          худалдан авагчдыг шууд холбох зорилготой. Манай платформ дээр та
-          бүтээгдэхүүнээ бүртгүүлж, сонирхсон худалдан авагчидтай харилцаж
-          чадна.
-        </Typography>
+      {/* About Section */}
+      <Box sx={{ px: { xs: 2, md: 10 }, py: 8 }}>
+        <Grid container spacing={4} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <Typography variant="h4" gutterBottom>
+              Бидний тухай
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              Бид Монголын хөдөө аж ахуйн худалдааг хялбарчилж, фермерүүд болон
+              худалдан авагчдыг шууд холбох зорилготой. Манай платформ дээр та
+              бүтээгдэхүүнээ бүртгүүлж, сонирхсон худалдан авагчидтай харилцаж
+              чадна.
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <img
+              src="/agriculture.png"
+              alt="Signup"
+              style={{ width: "100%", borderRadius: 8 }}
+            />
+          </Grid>
+        </Grid>
       </Box>
 
-      <Box>
-        <Typography variant="h5" gutterBottom>
+      {/* Benefits Section */}
+      <Box sx={{ bgcolor: "#f9f9f9", py: 6, px: { xs: 2, md: 10 } }}>
+        <Typography variant="h4" gutterBottom textAlign="center">
           Давуу талууд
         </Typography>
-        <ul>
-          <li>
-            <Typography variant="body1">
-              🌿 Шинэ, чанартай хөдөө аж ахуйн бүтээгдэхүүн
+        <Grid container spacing={4} justifyContent="center">
+          <Grid item xs={12} md={4} textAlign="center">
+            <LocalGroceryStoreIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+            <Typography variant="h6" sx={{ mt: 2 }}>
+              Шинэ, чанартай бүтээгдэхүүн
             </Typography>
-          </li>
-          <li>
-            <Typography variant="body1">
-              🤝 Худалдан авагч, борлуулагчдын шууд холболт
+            <Typography variant="body2" color="textSecondary">
+              Үйлдвэрлэгчээс хэрэглэгч рүү шууд хүргэнэ.
             </Typography>
-          </li>
-          <li>
-            <Typography variant="body1">
-              💰 Дундын зуучлагчгүй, хэмнэлттэй худалдаа
+          </Grid>
+      
+          <Grid item xs={12} md={4} textAlign="center">
+            <ChatBubbleOutlineIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+            <Typography variant="h6" sx={{ mt: 2 }}>
+              Шууд харилцаа
             </Typography>
-          </li>
-        </ul>
+            <Typography variant="body2" color="textSecondary">
+              Худалдан авагчтай шууд холбогдож, илүү итгэлтэй худалдаа хийнэ.
+            </Typography>
+          </Grid>
+      
+          <Grid item xs={12} md={4} textAlign="center">
+            <MoneyOffIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+            <Typography variant="h6" sx={{ mt: 2 }}>
+              Дундын зуучлагчгүй
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Зуучлалын шимтгэлгүй, ашгаа бүрэн хүртэх боломж.
+            </Typography>
+          </Grid>
+        </Grid>
       </Box>
-      <Box sx={{ display: "flex", alignItems: "center", py: 5, bgcolor: "#f9f9f9", borderRadius: 2, mb: 4 }}>
-  <Container sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-    <Box sx={{ flex: 1 }}>
-      <Typography variant="h4" gutterBottom>
-      Хөдөө аж ахуйн бизнесээ хялбархан хөгжүүлээрэй
-      </Typography>
-      <Typography variant="h6" color="textSecondary" paragraph>
-      Манай платформд үнэ төлбөргүй нэгдэж, бүтээгдэхүүнээ байршуулж, худалдан авагчидтай холбогдож, зах зээлийн хүрээгээ хялбархан өргөжүүлээрэй.
-      </Typography>
-      <Button
-      component={Link} to="/signup"
-        variant="contained"
-        sx={{
-          backgroundColor: "#6A994E", 
-          color: "white", 
-          '&:hover': { backgroundColor: "#588b47" },
-        }}
-        size="large"
-      >
-        Бүртгүүлэх
-      </Button>
-    </Box>
-    <Box sx={{ flex: 1 }}>
-      <img src="/agriculture.png" alt="Agriculture" style={{ width: "100%", borderRadius: "8px" }} />
-    </Box>
-  </Container>
-</Box>
-<Box sx={{ py: 6, textAlign: "center", bgcolor: "#f9f9f9", borderRadius: 2 }}>
-  <Typography variant="h4" gutterBottom>Хэрхэн ажилладаг вэ?</Typography>
-  <Typography variant="body1" color="textSecondary" sx={{ mb: 4 }}>
-    Та гурван хялбар алхмаар бүтээгдэхүүнээ борлуулах боломжтой.
-  </Typography>
 
-  <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-around", gap: 4, px: 2 }}>
-    <Box sx={{ flex: 1, maxWidth: 300, mx: "auto" }}>
-      <HowToRegIcon sx={{ fontSize: 60, color: "#6A994E" }} />
-      <Typography variant="h6" gutterBottom>1. Бүртгүүлэх</Typography>
-      <Typography variant="body2">Хялбар бүртгэл хийж, өөрийн ферм эсвэл компанийн мэдээллийг оруулна.</Typography>
-    </Box>
+      {/* Call to Action */}
+      <Box sx={{ px: { xs: 2, md: 10 }, py: 8 }}>
+        <Grid container spacing={6} alignItems="center">
+          <Grid item xs={12} md={6}>
+            <Typography variant="h4" gutterBottom>
+              Хөдөө аж ахуйн бизнесээ хялбархан хөгжүүлээрэй
+            </Typography>
+            <Typography variant="h6" color="textSecondary" paragraph>
+              Манай платформд үнэ төлбөргүй нэгдэж, бүтээгдэхүүнээ байршуулж,
+              зах зээлийн хүрээгээ хялбархан өргөжүүлээрэй.
+            </Typography>
+            <Button
+              component={Link}
+              to="/signup"
+              variant="contained"
+              sx={{
+                backgroundColor: "#6A994E",
+                color: "white",
+                '&:hover': { backgroundColor: "#588b47" },
+              }}
+              size="large"
+            >
+              Бүртгүүлэх
+            </Button>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <img
+              src="/abt_us.png"
+              alt="Aboutus"
+              style={{ width: "100%", borderRadius: 8 }}
+            />
+          </Grid>
+        </Grid>
+      </Box>
 
-    <Box sx={{ flex: 1, maxWidth: 300, mx: "auto" }}>
-      <AddShoppingCartIcon sx={{ fontSize: 60, color: "#6A994E" }} />
-      <Typography variant="h6" gutterBottom>2. Бүтээгдэхүүн нэмэх</Typography>
-      <Typography variant="body2">Борлуулах бүтээгдэхүүнээ зураг, үнэ, тайлбартайгаар нэмнэ.</Typography>
-    </Box>
+      {/* How It Works */}
+      <Box sx={{ bgcolor: "#f9f9f9", py: 8 }}>
+        <Typography variant="h4" textAlign="center" gutterBottom>
+          Хэрхэн ажилладаг вэ?
+        </Typography>
+        <Typography
+          variant="body1"
+          textAlign="center"
+          color="textSecondary"
+          sx={{ mb: 6 }}
+        >
+          Та гурван хялбар алхмаар бүтээгдэхүүнээ борлуулах боломжтой.
+        </Typography>
 
-    <Box sx={{ flex: 1, maxWidth: 300, mx: "auto" }}>
-      <ConnectWithoutContactIcon sx={{ fontSize: 60, color: "#6A994E" }} />
-      <Typography variant="h6" gutterBottom>3. Худалдан авагчтай холбогдох</Typography>
-      <Typography variant="body2">Худалдан авагч таны бүтээгдэхүүнийг сонирхож, шууд холбогдоно.</Typography>
-    </Box>
-  </Box>
-</Box>
+        <Grid
+          container
+          spacing={4}
+          justifyContent="center"
+          sx={{ px: { xs: 2, md: 10 } }}
+        >
+          <Grid item xs={12} md={4} textAlign="center">
+            <HowToRegIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+            <Typography variant="h6">1. Бүртгүүлэх</Typography>
+            <Typography variant="body2">
+              Ферм эсвэл компанийн мэдээллээ оруулна.
+            </Typography>
+          </Grid>
 
-<Footer />
-    </Container>
-    
+          <Grid item xs={12} md={4} textAlign="center">
+            <AddShoppingCartIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+            <Typography variant="h6">2. Бүтээгдэхүүн нэмэх</Typography>
+            <Typography variant="body2">
+              Зураг, үнэ, тайлбартайгаар нэмнэ.
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} md={4} textAlign="center">
+            <ConnectWithoutContactIcon sx={{ fontSize: 60, color: "#6A994E" }} />
+            <Typography variant="h6">3. Худалдан авагчтай холбогдох</Typography>
+            <Typography variant="body2">
+              Хэрэглэгч таныг сонирхож холбогдоно.
+            </Typography>
+          </Grid>
+        </Grid>
+      </Box>
+
+      <Footer />
+    </Box>
   );
 }
 

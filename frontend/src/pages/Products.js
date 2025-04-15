@@ -17,6 +17,7 @@ function Products() {
   ];
 
   useEffect(() => {
+    console.log("🔍 Fetching all products...");
     axios.get("http://localhost:5000/api/products")
       .then((response) => {
         setProducts(response.data);

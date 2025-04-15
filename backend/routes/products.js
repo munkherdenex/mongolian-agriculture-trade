@@ -6,21 +6,23 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../cloudinary");
 const { authenticateUser } = require('../middleware/auth');
 
-
+// Setup Cloudinary storage for multer
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "products", 
+    folder: "products",
     allowed_formats: ["jpg", "png", "jpeg"],
   },
 });
 const upload = multer({ storage });
 
-// Get All Products
+// ✅ Get All Products with Optional Filters
 router.get("/", async (req, res) => {
   try {
+    console.log("🔥 GET /api/products called");
     const { search, category, minPrice, maxPrice, location } = req.query;
-    
+    console.log("Query params:", { search, category, minPrice, maxPrice, location });
+
     let query = `
       SELECT products.*, users.name AS poster_name
       FROM products
@@ -30,7 +32,7 @@ router.get("/", async (req, res) => {
     let values = [];
 
     if (search) {
-      query += " AND LOWER(name) LIKE LOWER($1)";
+      query += ` AND LOWER(title) LIKE LOWER($${values.length + 1})`;
       values.push(`%${search}%`);
     }
     if (category) {
@@ -55,12 +57,12 @@ router.get("/", async (req, res) => {
     const { rows } = await pool.query(query, values);
     res.json(rows);
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching products:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
 
-// Get a Single Product by ID 
+// ✅ Get Single Product by ID
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -68,7 +70,7 @@ router.get("/:id", async (req, res) => {
       `SELECT products.*, users.name AS poster_name 
        FROM products 
        JOIN users ON products.user_id = users.id 
-       WHERE products.id = $1`, 
+       WHERE products.id = $1`,
       [id]
     );
     if (product.rows.length === 0) return res.status(404).json({ message: "Product not found" });
@@ -79,16 +81,14 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Add a New Product with Image Upload
+// ✅ Add a New Product with Image Upload
 router.post("/", upload.single("image"), async (req, res) => {
   try {
-    console.log("Received data:", req.body); 
-    console.log("Received file:", req.file); 
+    console.log("Received data:", req.body);
+    console.log("Received file:", req.file);
 
     const { title, description, price, location, contact, user_id } = req.body;
     const imageUrl = req.file ? req.file.path : null;
-
-    console.log("Extracted fields:", { title, description, price, location, contact, imageUrl });
 
     const result = await pool.query(
       "INSERT INTO products (title, description, price, location, image_url, contact, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
@@ -97,40 +97,36 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     res.json(result.rows[0]);
   } catch (err) {
-    console.error(err.message);
+    console.error("Error adding product:", err.message);
     res.status(500).send("Server Error");
   }
 });
 
-// routes/products.js 
-router.get('/my-products', authenticateUser, async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const products = await pool.query(
-      'SELECT * FROM products WHERE user_id = $1',
-      [userId]
-    );
-    res.json(products.rows);
-  } catch (err) {
-    console.error("Error fetching user's products:", err);
-    res.status(500).json({ error: "Something went wrong" });
-  }
-});
-
-
-// Delete a Product
-router.delete("/:id", async (req, res) => {
+// ✅ Delete a Product
+router.delete("/:id", authenticateUser, async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query("DELETE FROM products WHERE id = $1 RETURNING *", [id]);
-    if (result.rows.length === 0) {
+    const userId = req.user.id;
+
+    // Check if product belongs to the logged-in user
+    const product = await pool.query("SELECT * FROM products WHERE id = $1", [id]);
+
+    if (product.rows.length === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
+
+    if (product.rows[0].user_id !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this product" });
+    }
+
+    await pool.query("DELETE FROM products WHERE id = $1", [id]);
+
     res.json({ message: "Product deleted successfully" });
   } catch (err) {
-    console.error(err.message);
+    console.error("Error deleting product:", err.message);
     res.status(500).send("Server Error");
   }
 });
+
 
 module.exports = router;
