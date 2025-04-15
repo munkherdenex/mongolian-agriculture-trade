@@ -6,7 +6,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 const app = express();
-const server = http.createServer(app); // Create server from app
+const server = http.createServer(app);
 
 // Middleware
 app.use(cors({
@@ -22,8 +22,9 @@ app.use("/api/products", require("./routes/products"));
 app.use("/api/saved-products", require("./routes/savedProducts"));
 app.use("/api/contact", require("./routes/contact"));
 app.use("/api/my-products", require("./routes/myProducts"));
+app.use("/api/chat", require("./routes/chat"));
 
-// 404 Fallback for Unknown Routes
+// 404 Fallback
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
@@ -39,10 +40,35 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("✅ New user connected:", socket.id);
 
-  // Handle incoming chat messages
-  socket.on("sendMessage", (data) => {
-    console.log("📨 Message received:", data);
-    socket.broadcast.emit("receiveMessage", data); // send to everyone except sender
+  // Join a room
+  socket.on("joinRoom", ({ roomId }) => {
+    socket.join(roomId);
+    console.log(`🔗 User joined room: ${roomId}`);
+  });
+
+  // Handle message sending to a room
+  socket.on("sendMessage", async (data) => {
+    const { userId, username, message, roomId } = data;
+  
+    const newMessage = {
+      userId,
+      username,
+      message,
+      roomId,
+      createdAt: new Date(),
+    };
+  
+    try {
+      await pool.query(
+        "INSERT INTO messages (user_id, username, message, room_id) VALUES ($1, $2, $3, $4)",
+        [userId, username, message, roomId]
+      );
+  
+      // Emit to everyone in the room
+      io.to(roomId).emit("receiveMessage", newMessage);
+    } catch (err) {
+      console.error("Error saving message:", err);
+    }
   });
 
   socket.on("disconnect", () => {

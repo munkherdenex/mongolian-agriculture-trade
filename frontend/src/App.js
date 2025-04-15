@@ -66,6 +66,7 @@ function App() {
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/chat/:productId/:sellerId" element={<ChatPage />} />
           <Route path="/my-products" element={<MyProducts />} />
 
           {/* Protected Routes */}

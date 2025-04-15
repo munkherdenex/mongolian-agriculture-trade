@@ -38,7 +38,6 @@ function Navbar() {
     <>
       <AppBar position="static" sx={{ backgroundColor: "#4E944F" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", minHeight: 72 }}>
-          {/* Left side logo and menu */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {isMobile && (
               <IconButton
