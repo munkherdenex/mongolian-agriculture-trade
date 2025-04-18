@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute"; 
+import socket from "./socket";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ChatPage from "./pages/ChatPage";
@@ -17,11 +18,12 @@ import ProductDetails from './pages/ProductDetails';
 import axios from "axios";
 import MyProducts from "./pages/MyProducts";
 
-
 function App() {
   const [savedProducts, setSavedProducts] = useState([]);
 
   useEffect(() => {
+    socket.connect();
+
     const fetchSavedProducts = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -37,21 +39,11 @@ function App() {
     if (localStorage.getItem("token")) {
       fetchSavedProducts();
     }
-  }, []);
 
-  const handleSave = async (product) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:5000/api/saved-products",
-        product,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setSavedProducts((prev) => [...prev, response.data]); 
-    } catch (error) {
-      console.error("Error saving product:", error);
-    }
-  };
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <AuthProvider>
@@ -66,12 +58,12 @@ function App() {
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/products/:id" element={<ProductDetails />} />
-          <Route path="/chat/:productId/:sellerId" element={<ChatPage />} />
+          <Route path="/chat/:productId/:recipientId" element={<ChatPage />} />
           <Route path="/my-products" element={<MyProducts />} />
 
           {/* Protected Routes */}
           <Route element={<PrivateRoute />}>
-            <Route path="/products" element={<Products handleSave={handleSave} />} />
+            <Route path="/products" element={<Products />} />
             <Route path="/saved-products" element={<SavedProducts savedProducts={savedProducts} />} />
           </Route>
         </Routes>

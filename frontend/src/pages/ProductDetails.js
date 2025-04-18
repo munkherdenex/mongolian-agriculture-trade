@@ -26,6 +26,7 @@ const ProductDetails = () => {
     axios
       .get(`http://localhost:5000/api/products/${id}`)
       .then((response) => {
+        console.log("Product fetched:", response.data);
         setProduct(response.data);
         setLoading(false);
       })
@@ -36,13 +37,59 @@ const ProductDetails = () => {
       });
   }, [id]);
 
-  const handleChatClick = () => {
+  const handleChatClick = async () => {
     if (!user) {
       alert("Та нэвтэрч орно уу.");
       return;
     }
-    navigate(`/chat/${product.id}/${product.seller_id}`);
+  
+    if (!product?.id || !product?.seller_id) {
+      alert("Барааны мэдээлэл бүрэн биш байна.");
+      return;
+    }
+  
+    try {
+      // Step 1: Start a chat by sending a POST request
+      const res = await axios.post("http://localhost:5000/api/chat/start", {
+        product_id: product.id,
+        buyer_id: user.id,
+        seller_id: product.seller_id,
+      });
+  
+      console.log("Chat started or already exists:", res.data);
+  
+      // Step 2: Navigate to chat page (general or specific route as needed)
+      navigate("/chat");
+    } catch (error) {
+      console.error("Чат эхлүүлэхэд алдаа гарлаа:", error);
+      alert("Чат эхлүүлэхэд алдаа гарлаа.");
+    }
   };
+
+  const handleSaveClick = async () => {
+    if (!user) {
+      alert("Та нэвтэрч орно уу.");
+      return;
+    }
+  
+    if (!product?.id) {
+      alert("Барааны мэдээлэл бүрэн биш байна.");
+      return;
+    }
+  
+    try {
+      await axios.post("http://localhost:5000/api/saved-products", {
+        user_id: user.id,
+        product_id: product.id,
+      });
+  
+      alert("Бараа амжилттай хадгалагдлаа.");
+    } catch (error) {
+      console.error("Хадгалах үед алдаа гарлаа:", error);
+      alert("Бараа хадгалах үед алдаа гарлаа.");
+    }
+  };
+  
 
   if (loading) {
     return (
@@ -98,7 +145,7 @@ const ProductDetails = () => {
             </Typography>
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Нийтэлсэн: {product.poster_name}
+            Нийтэлсэн: {product.poster_name || "Тодорхойгүй"}
           </Typography>
 
           {/* 💬 Chat with Seller Button */}
@@ -106,6 +153,9 @@ const ProductDetails = () => {
             <Box mt={2}>
               <Button variant="outlined" color="primary" onClick={handleChatClick}>
                 💬 Худалдагчтай чатлах
+              </Button>
+              <Button variant="outlined" color="secondary" onClick={handleSaveClick}>
+                💾 Хадгалах
               </Button>
             </Box>
           )}

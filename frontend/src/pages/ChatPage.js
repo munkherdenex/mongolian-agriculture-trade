@@ -1,101 +1,189 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { io } from "socket.io-client";
+import socket from "../socket";
 import axios from "axios";
-import { TextField, Button, Box, Typography } from "@mui/material";
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  TextField,
+  Button,
+  Paper,
+} from "@mui/material";
 
-const socket = io("http://localhost:5000"); // Backend socket server
-
-function ChatPage() {
+const ChatPage = () => {
   const { productId, sellerId } = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
-  const roomId = `${productId}_${user.id}_${sellerId}`;
 
-  const [message, setMessage] = useState("");
-  const [chatLog, setChatLog] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [selectedConv, setSelectedConv] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
 
-  const chatEndRef = useRef(null);
-  const scrollToBottom = () => chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-
-  // Load chat history & join room
+  // Load all conversations
   useEffect(() => {
-    scrollToBottom();
-  
-    // Join specific room
-    socket.emit("joinRoom", { roomId });
-  
-    // Load chat history for this room
-    axios.get(`http://localhost:5000/api/chat/messages?roomId=${roomId}`)
-      .then(res => {
-        setChatLog(res.data.map(msg => ({
-          text: msg.message,
-          sender: msg.user_id === user.id ? "me" : "other",
-          username: msg.username
-        })));
-      })
-      .catch(err => console.error("Failed to load messages", err));
-  
-    // Real-time listener
-    socket.on("receiveMessage", (data) => {
-      setChatLog(prev => [
-        ...prev,
-        {
-          text: data.message,
-          sender: data.userId === user.id ? "me" : "other",
-          username: data.username
-        }
-      ]);
-    });
-  
-    return () => socket.off("receiveMessage");
-  }, [roomId, user?.id]);
-  
+    axios
+      .get(`http://localhost:5000/api/chat/conversations/${user.id}`)
+      .then((res) => setConversations(res.data))
+      .catch((err) => console.error("Error fetching conversations:", err));
+  }, [user.id]);
+
+  useEffect(() => {
+    if (productId && sellerId) {
+      axios
+        .post("http://localhost:5000/api/chat/start", {
+          product_id: productId,
+          buyer_id: user.id,
+          seller_id: sellerId,
+        })
+        .then((res) => {
+          setSelectedConv(res.data);
+        })
+        .catch((err) => {
+          console.error("Error starting conversation:", err);
+        });
+    }
+  }, [productId, sellerId, user.id]);
+
+  useEffect(() => {
+    if (!selectedConv) return;
+    axios
+      .get(`http://localhost:5000/api/chat/messages/${selectedConv.id}`)
+      .then((res) => setMessages(res.data))
+      .catch((err) => console.error("Error fetching messages:", err));
+  }, [selectedConv]);
 
   const sendMessage = () => {
-    if (!message.trim()) return;
+    if (!newMessage.trim()) return;
 
-    const newMessage = {
-      roomId,
-      userId: user.id,
-      username: user.name,
-      message
+    const messageData = {
+      conversation_id: selectedConv.id,
+      sender_id: user.id,
+      message: newMessage,
     };
 
-    socket.emit("sendMessage", newMessage);
+    socket.emit("send_message", messageData);
+    axios.post("http://localhost:5000/api/chat/send", messageData);
 
-    setChatLog(prev => [...prev, {
-      text: message,
-      sender: "me",
-      username: user.name
-    }]);
-    setMessage("");
-    scrollToBottom();
+    setMessages((prev) => [
+      ...prev,
+      {
+        ...messageData,
+        sender_name: user.username,
+        created_at: new Date().toISOString(),
+      },
+    ]);
+    setNewMessage("");
   };
 
-  return (
-    <Box p={2}>
-      <Typography variant="h5" gutterBottom>Chat</Typography>
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      if (data.conversation_id === selectedConv?.id) {
+        setMessages((prev) => [...prev, data]);
+      }
+    });
+    return () => socket.off("receive_message");
+  }, [selectedConv]);
 
-      <Box sx={{ height: 300, overflowY: "scroll", border: "1px solid #ccc", mb: 2, p: 1 }}>
-        {chatLog.map((msg, idx) => (
-          <Box key={idx} sx={{ textAlign: msg.sender === "me" ? "right" : "left" }}>
-            <Typography variant="body2" fontWeight={600}>{msg.username}</Typography>
-            <Typography>{msg.text}</Typography>
-          </Box>
-        ))}
-        <div ref={chatEndRef} />
+  return (
+    <Box sx={{ display: "flex", height: "90vh", bgcolor: "#f5f5f5" }}>
+      {/* Sidebar */}
+      <Box
+        sx={{
+          width: "25%",
+          borderRight: "1px solid #ddd",
+          overflowY: "auto",
+          p: 2,
+          bgcolor: "#fff",
+        }}
+      >
+        <Typography variant="h6" gutterBottom>
+          Чат хэрэглэгчид
+        </Typography>
+        <List>
+          {conversations.map((conv) => (
+            <React.Fragment key={conv.id}>
+              <ListItem
+                button
+                onClick={() => setSelectedConv(conv)}
+                selected={selectedConv?.id === conv.id}
+              >
+                <ListItemText
+                  primary={conv.product_title}
+                  secondary={conv.other_user_name}
+                />
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          ))}
+        </List>
       </Box>
 
-      <TextField
-        fullWidth
-        label="Текст бичих..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-      />
-      <Button onClick={sendMessage} variant="contained" sx={{ mt: 1 }}>Send</Button>
+      {/* Chat Window */}
+      <Box sx={{ width: "75%", p: 3, display: "flex", flexDirection: "column" }}>
+        {selectedConv ? (
+          <>
+            <Typography variant="h6" gutterBottom>
+              {selectedConv.product_title}
+            </Typography>
+
+            <Paper
+              elevation={1}
+              sx={{
+                flexGrow: 1,
+                overflowY: "auto",
+                p: 2,
+                mb: 2,
+                border: "1px solid #ddd",
+                borderRadius: 1,
+                backgroundColor: "#fff",
+              }}
+            >
+              {messages.map((msg, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    mb: 1,
+                    textAlign: msg.sender_id === user.id ? "right" : "left",
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: "bold",
+                      color: msg.sender_id === user.id ? "#4CAF50" : "#1976D2",
+                    }}
+                  >
+                    {msg.sender_name}
+                  </Typography>
+                  <Typography variant="body2">{msg.message}</Typography>
+                </Box>
+              ))}
+            </Paper>
+
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="Мессеж бичих..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+              />
+              <Button variant="contained" color="primary" onClick={sendMessage}>
+                Илгээх
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <Typography variant="body1">Чатыг сонгоно уу...</Typography>
+        )}
+      </Box>
     </Box>
   );
-}
+};
 
 export default ChatPage;

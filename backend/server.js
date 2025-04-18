@@ -37,44 +37,72 @@ const io = new Server(server, {
   }
 });
 
+const connectedUsers = new Map(); // Track userId <-> socket.id
+
 io.on("connection", (socket) => {
   console.log("✅ New user connected:", socket.id);
 
-  // Join a room
-  socket.on("joinRoom", ({ roomId }) => {
-    socket.join(roomId);
-    console.log(`🔗 User joined room: ${roomId}`);
+  // Listen when user registers their ID after login
+  socket.on("registerUser", (userId) => {
+    connectedUsers.set(userId, socket.id);
+    console.log(`📍 Registered user ${userId} to socket ${socket.id}`);
   });
 
-  // Handle message sending to a room
+  socket.on("joinRoom", ({ roomId }) => {
+    socket.join(roomId);
+    console.log(`🔗 User ${socket.id} joined room: ${roomId}`);
+  });
+
   socket.on("sendMessage", async (data) => {
-    const { userId, username, message, roomId } = data;
-  
+    const { userId, username, message, roomId, recipientId } = data;
+
     const newMessage = {
       userId,
       username,
       message,
       roomId,
+      recipientId,
       createdAt: new Date(),
     };
-  
+
     try {
       await pool.query(
-        "INSERT INTO messages (user_id, username, message, room_id) VALUES ($1, $2, $3, $4)",
-        [userId, username, message, roomId]
-      );
-  
-      // Emit to everyone in the room
+        "INSERT INTO messages (user_id, username, message, room_id, recipientId, created_at) VALUES ($1, $2, $3, $4, $5, $6)",
+        [userId, username, message, roomId, recipientId, new Date()]
+      );      
+
       io.to(roomId).emit("receiveMessage", newMessage);
+
+      // 🎯 Notify recipient (if online)
+      const recipientSocketId = connectedUsers.get(recipientId);
+      if (recipientSocketId && !Array.from(socket.rooms).includes(roomId)) {
+        // Recipient is online but not in the room (i.e., not currently chatting)
+        io.to(recipientSocketId).emit("newMessageNotification", {
+          fromUserId: userId,
+          fromUsername: username,
+          message,
+          roomId
+        });
+        console.log(`🔔 Notified user ${recipientId} (socket: ${recipientSocketId}) about new message`);
+      }
     } catch (err) {
-      console.error("Error saving message:", err);
+      console.error("❌ Error saving message:", err);
     }
   });
 
   socket.on("disconnect", () => {
-    console.log("❌ User disconnected:", socket.id);
+    // Remove from map
+    for (let [userId, sockId] of connectedUsers.entries()) {
+      if (sockId === socket.id) {
+        connectedUsers.delete(userId);
+        console.log(`❌ User ${userId} disconnected and removed from map`);
+        break;
+      }
+    }
   });
 });
+
+
 
 // 🚀 Start the server
 const PORT = process.env.PORT || 5000;
