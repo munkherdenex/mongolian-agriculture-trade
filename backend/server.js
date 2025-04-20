@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
     console.log(`🔗 User ${socket.id} joined room: ${roomId}`);
   });
 
-  socket.on("sendMessage", async (data) => {
+  socket.on("send_message", async (data) => {
     const { userId, username, message, roomId, recipientId } = data;
 
     const newMessage = {
@@ -71,7 +71,7 @@ io.on("connection", (socket) => {
         [userId, username, message, roomId, recipientId, new Date()]
       );      
 
-      io.to(roomId).emit("receiveMessage", newMessage);
+      io.to(roomId).emit("receive_message", newMessage);
 
       // 🎯 Notify recipient (if online)
       const recipientSocketId = connectedUsers.get(recipientId);

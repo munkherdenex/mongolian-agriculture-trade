@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import socket from "../socket";
 import axios from "axios";
@@ -12,7 +12,9 @@ import {
   TextField,
   Button,
   Paper,
+  Badge,
 } from "@mui/material";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 const ChatPage = () => {
   const { productId, sellerId } = useParams();
@@ -22,6 +24,15 @@ const ChatPage = () => {
   const [selectedConv, setSelectedConv] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [notifications, setNotifications] = useState({});
+  const messagesEndRef = useRef(null);
+
+  // Register user to socket
+  useEffect(() => {
+    if (user && user.id) {
+      socket.emit("registerUser", user.id);
+    }
+  }, [user]);
 
   // Load all conversations
   useEffect(() => {
@@ -31,6 +42,7 @@ const ChatPage = () => {
       .catch((err) => console.error("Error fetching conversations:", err));
   }, [user.id]);
 
+  // Start a new conversation if product/seller from URL
   useEffect(() => {
     if (productId && sellerId) {
       axios
@@ -39,15 +51,12 @@ const ChatPage = () => {
           buyer_id: user.id,
           seller_id: sellerId,
         })
-        .then((res) => {
-          setSelectedConv(res.data);
-        })
-        .catch((err) => {
-          console.error("Error starting conversation:", err);
-        });
+        .then((res) => setSelectedConv(res.data))
+        .catch((err) => console.error("Error starting conversation:", err));
     }
   }, [productId, sellerId, user.id]);
 
+  // Load messages for selected conversation
   useEffect(() => {
     if (!selectedConv) return;
     axios
@@ -56,6 +65,7 @@ const ChatPage = () => {
       .catch((err) => console.error("Error fetching messages:", err));
   }, [selectedConv]);
 
+  // Send message
   const sendMessage = () => {
     if (!newMessage.trim()) return;
 
@@ -65,7 +75,7 @@ const ChatPage = () => {
       message: newMessage,
     };
 
-    socket.emit("send_message", messageData);
+    socket.emit("sendMessage", messageData);
     axios.post("http://localhost:5000/api/chat/send", messageData);
 
     setMessages((prev) => [
@@ -79,14 +89,42 @@ const ChatPage = () => {
     setNewMessage("");
   };
 
+  // Listen for incoming messages
   useEffect(() => {
-    socket.on("receive_message", (data) => {
+    const handleReceiveMessage = (data) => {
       if (data.conversation_id === selectedConv?.id) {
         setMessages((prev) => [...prev, data]);
+      } else {
+        // Notification system
+        setNotifications((prev) => ({
+          ...prev,
+          [data.conversation_id]: (prev[data.conversation_id] || 0) + 1,
+        }));
       }
-    });
-    return () => socket.off("receive_message");
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
+    return () => socket.off("receiveMessage", handleReceiveMessage);
   }, [selectedConv]);
+
+  // Scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Select conversation and clear notification
+  const handleSelectConversation = (conv) => {
+    setSelectedConv(conv);
+    setNotifications((prev) => {
+      const updated = { ...prev };
+      delete updated[conv.id];
+      return updated;
+    });
+  };
+
+  if (!user) {
+    return <Typography>Нэвтэрч орно уу...</Typography>;
+  }
 
   return (
     <Box sx={{ display: "flex", height: "90vh", bgcolor: "#f5f5f5" }}>
@@ -108,13 +146,18 @@ const ChatPage = () => {
             <React.Fragment key={conv.id}>
               <ListItem
                 button
-                onClick={() => setSelectedConv(conv)}
+                onClick={() => handleSelectConversation(conv)}
                 selected={selectedConv?.id === conv.id}
               >
                 <ListItemText
                   primary={conv.product_title}
                   secondary={conv.other_user_name}
                 />
+                {notifications[conv.id] && (
+                  <Badge badgeContent={notifications[conv.id]} color="error">
+                    <NotificationsIcon fontSize="small" />
+                  </Badge>
+                )}
               </ListItem>
               <Divider />
             </React.Fragment>
@@ -162,6 +205,7 @@ const ChatPage = () => {
                   <Typography variant="body2">{msg.message}</Typography>
                 </Box>
               ))}
+              <div ref={messagesEndRef} />
             </Paper>
 
             <Box sx={{ display: "flex", gap: 2 }}>

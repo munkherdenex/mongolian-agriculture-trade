@@ -10,7 +10,11 @@ import {
   Box,
   Alert,
   Button,
+  Grid,
+  Stack,
 } from "@mui/material";
+import ChatIcon from "@mui/icons-material/Chat";
+import SaveIcon from "@mui/icons-material/Save";
 import axios from "axios";
 
 const ProductDetails = () => {
@@ -19,14 +23,12 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/products/${id}`)
       .then((response) => {
-        console.log("Product fetched:", response.data);
         setProduct(response.data);
         setLoading(false);
       })
@@ -38,27 +40,15 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleChatClick = async () => {
-    if (!user) {
-      alert("Та нэвтэрч орно уу.");
-      return;
-    }
-  
-    if (!product?.id || !product?.seller_id) {
-      alert("Барааны мэдээлэл бүрэн биш байна.");
-      return;
-    }
-  
+    if (!user) return alert("Та нэвтэрч орно уу.");
+    if (!product?.id || !product?.seller_id) return alert("Барааны мэдээлэл бүрэн биш байна.");
+
     try {
-      // Step 1: Start a chat by sending a POST request
-      const res = await axios.post("http://localhost:5000/api/chat/start", {
+      await axios.post("http://localhost:5000/api/chat/start", {
         product_id: product.id,
         buyer_id: user.id,
         seller_id: product.seller_id,
       });
-  
-      console.log("Chat started or already exists:", res.data);
-  
-      // Step 2: Navigate to chat page (general or specific route as needed)
       navigate("/chat");
     } catch (error) {
       console.error("Чат эхлүүлэхэд алдаа гарлаа:", error);
@@ -67,29 +57,20 @@ const ProductDetails = () => {
   };
 
   const handleSaveClick = async () => {
-    if (!user) {
-      alert("Та нэвтэрч орно уу.");
-      return;
-    }
-  
-    if (!product?.id) {
-      alert("Барааны мэдээлэл бүрэн биш байна.");
-      return;
-    }
-  
+    if (!user) return alert("Та нэвтэрч орно уу.");
+    if (!product?.id) return alert("Барааны мэдээлэл бүрэн биш байна.");
+
     try {
       await axios.post("http://localhost:5000/api/saved-products", {
         user_id: user.id,
         product_id: product.id,
       });
-  
       alert("Бараа амжилттай хадгалагдлаа.");
     } catch (error) {
       console.error("Хадгалах үед алдаа гарлаа:", error);
       alert("Бараа хадгалах үед алдаа гарлаа.");
     }
   };
-  
 
   if (loading) {
     return (
@@ -104,62 +85,76 @@ const ProductDetails = () => {
   if (error) {
     return (
       <Container>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error" sx={{ mt: 4 }}>{error}</Alert>
       </Container>
     );
   }
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Card>
-        <CardMedia
-          component="img"
-          height="300"
-          image={product.image_url?.trim() || "/no_pic.png"}
-          alt={product.title || "Барааны зураг"}
-          sx={{ objectFit: "cover", backgroundColor: "#f5f5f5" }}
-        />
-        <CardContent>
-          <Typography variant="h4" gutterBottom fontWeight="bold">
-            {product.title || "Нэргүй бараа"}
-          </Typography>
-          <Typography paragraph color="text.secondary">
-            {product.description || "Тайлбар байхгүй"}
-          </Typography>
-          <Typography variant="h6" fontWeight="bold">
-            Үнэ:{" "}
-            <Typography component="span">
-              {product.price ? `${product.price}₮` : "Мэдээлэл байхгүй"}
-            </Typography>
-          </Typography>
-          <Typography variant="h6" fontWeight="bold">
-            Байршил:{" "}
-            <Typography component="span">
-              {product.location || "Мэдээлэл байхгүй"}
-            </Typography>
-          </Typography>
-          <Typography variant="h6" fontWeight="bold">
-            Холбоо барих:{" "}
-            <Typography component="span">
-              {product.contact || "Байхгүй"}
-            </Typography>
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Нийтэлсэн: {product.poster_name || "Тодорхойгүй"}
-          </Typography>
+    <Container sx={{ mt: 5 }}>
+      <Card elevation={3}>
+        <Grid container>
+          <Grid item xs={12} md={6}>
+            <CardMedia
+              component="img"
+              image={product.image_url?.trim() || "/no_pic.png"}
+              alt={product.title || "Барааны зураг"}
+              sx={{
+                height: { xs: 250, md: 400 },
+                objectFit: "cover",
+                backgroundColor: "#f2f2f2",
+              }}
+            />
+          </Grid>
 
-          {/* 💬 Chat with Seller Button */}
-          {user && product?.seller_id !== user.id && (
-            <Box mt={2}>
-              <Button variant="outlined" color="primary" onClick={handleChatClick}>
-                💬 Худалдагчтай чатлах
-              </Button>
-              <Button variant="outlined" color="secondary" onClick={handleSaveClick}>
-                💾 Хадгалах
-              </Button>
-            </Box>
-          )}
-        </CardContent>
+          <Grid item xs={12} md={6}>
+            <CardContent sx={{ p: 4 }}>
+              <Typography variant="h4" fontWeight="bold" gutterBottom>
+                {product.title || "Нэргүй бараа"}
+              </Typography>
+
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+                {product.description || "Тайлбар байхгүй"}
+              </Typography>
+
+              <Stack spacing={1} sx={{ mb: 2 }}>
+                <Typography variant="h6">
+                  💰 Үнэ: <strong>{product.price ? `${product.price}₮` : "Мэдээлэл байхгүй"}</strong>
+                </Typography>
+                <Typography variant="h6">
+                  📍 Байршил: <strong>{product.location || "Мэдээлэл байхгүй"}</strong>
+                </Typography>
+                <Typography variant="h6">
+                  ☎️ Холбоо барих: <strong>{product.contact || "Байхгүй"}</strong>
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Нийтэлсэн: {product.poster_name || "Тодорхойгүй"}
+                </Typography>
+              </Stack>
+
+              {user && product?.seller_id !== user.id && (
+                <Stack direction="row" spacing={2} mt={3}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<ChatIcon />}
+                    onClick={handleChatClick}
+                  >
+                    Худалдагчтай чатлах
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    startIcon={<SaveIcon />}
+                    onClick={handleSaveClick}
+                  >
+                    Хадгалах
+                  </Button>
+                </Stack>
+              )}
+            </CardContent>
+          </Grid>
+        </Grid>
       </Card>
     </Container>
   );
