@@ -15,6 +15,7 @@ import {
   Badge,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { DateTime } from "luxon";
 
 const ChatPage = () => {
   const { productId, sellerId } = useParams();
@@ -42,7 +43,7 @@ const ChatPage = () => {
       .catch((err) => console.error("Error fetching conversations:", err));
   }, [user.id]);
 
-  // Start a new conversation if product/seller from URL
+  // Start new conversation from product page
   useEffect(() => {
     if (productId && sellerId) {
       axios
@@ -56,13 +57,20 @@ const ChatPage = () => {
     }
   }, [productId, sellerId, user.id]);
 
-  // Load messages for selected conversation
+  // Load messages
   useEffect(() => {
     if (!selectedConv) return;
-    axios
-      .get(`http://localhost:5000/api/chat/messages/${selectedConv.id}`)
-      .then((res) => setMessages(res.data))
-      .catch((err) => console.error("Error fetching messages:", err));
+
+    const fetchMessages = () => {
+      axios
+        .get(`http://localhost:5000/api/chat/messages/${selectedConv.id}`)
+        .then((res) => setMessages(res.data))
+        .catch((err) => console.error("Error fetching messages:", err));
+    };
+
+    fetchMessages();
+    const intervalId = setInterval(fetchMessages, 3000);
+    return () => clearInterval(intervalId);
   }, [selectedConv]);
 
   // Send message
@@ -75,7 +83,7 @@ const ChatPage = () => {
       message: newMessage,
     };
 
-    socket.emit("sendMessage", messageData);
+    socket.emit("send_message", messageData);
     axios.post("http://localhost:5000/api/chat/send", messageData);
 
     setMessages((prev) => [
@@ -95,7 +103,6 @@ const ChatPage = () => {
       if (data.conversation_id === selectedConv?.id) {
         setMessages((prev) => [...prev, data]);
       } else {
-        // Notification system
         setNotifications((prev) => ({
           ...prev,
           [data.conversation_id]: (prev[data.conversation_id] || 0) + 1,
@@ -103,8 +110,8 @@ const ChatPage = () => {
       }
     };
 
-    socket.on("receiveMessage", handleReceiveMessage);
-    return () => socket.off("receiveMessage", handleReceiveMessage);
+    socket.on("receive_message", handleReceiveMessage);
+    return () => socket.off("receive_message", handleReceiveMessage);
   }, [selectedConv]);
 
   // Scroll to bottom
@@ -112,7 +119,6 @@ const ChatPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Select conversation and clear notification
   const handleSelectConversation = (conv) => {
     setSelectedConv(conv);
     setNotifications((prev) => {
@@ -185,26 +191,71 @@ const ChatPage = () => {
                 backgroundColor: "#fff",
               }}
             >
-              {messages.map((msg, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    mb: 1,
-                    textAlign: msg.sender_id === user.id ? "right" : "left",
-                  }}
-                >
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: "bold",
-                      color: msg.sender_id === user.id ? "#4CAF50" : "#1976D2",
-                    }}
-                  >
-                    {msg.sender_name}
-                  </Typography>
-                  <Typography variant="body2">{msg.message}</Typography>
-                </Box>
-              ))}
+              {messages.length === 0 ? (
+                <Typography variant="body2" color="textSecondary">
+                  Мессеж байхгүй байна.
+                </Typography>
+              ) : (
+                messages.map((msg, index) => {
+                  const isCurrentUser = msg.sender_id === user.id;
+                  const timeAgo = DateTime.fromISO(msg.created_at)
+                    .toLocal()
+                    .toRelative({ locale: "mn" });
+
+                  const senderName = msg.sender_name || (isCurrentUser ? user.username : selectedConv.other_user_name);
+
+                  return (
+                    <Box
+                      key={index}
+                      sx={{
+                        mb: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: isCurrentUser ? "flex-end" : "flex-start",
+                      }}
+                    >
+                      <Box sx={{ textAlign: isCurrentUser ? "right" : "left" }}>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            fontWeight: "bold",
+                            display: "block",
+                            color: isCurrentUser ? "#4CAF50" : "#1976D2",
+                          }}
+                        >
+                          {senderName}
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: "gray",
+                            mb: 0.5,
+                            fontSize: "0.75rem",
+                          }}
+                        >
+                          {timeAgo}
+                        </Typography>
+                      </Box>
+
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          px: 1.5,
+                          py: 1,
+                          backgroundColor: isCurrentUser ? "#d1fce6" : "#e0e7ff",
+                          borderRadius: isCurrentUser
+                            ? "12px 12px 0 12px"
+                            : "12px 12px 12px 0",
+                          maxWidth: "70%",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {msg.message}
+                      </Typography>
+                    </Box>
+                  );
+                })
+              )}
               <div ref={messagesEndRef} />
             </Paper>
 

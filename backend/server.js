@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
 
     try {
       await pool.query(
-        "INSERT INTO messages (user_id, username, message, room_id, recipientId, created_at) VALUES ($1, $2, $3, $4, $5, $6)",
+        "INSERT INTO messages (user_id, username, message, room_id, recipient_id, created_at) VALUES ($1, $2, $3, $4, $5, $6)",
         [userId, username, message, roomId, recipientId, new Date()]
       );      
 
