@@ -30,6 +30,7 @@ function Navbar() {
     { text: "Холбогдох", link: "/contact" },
     { text: "Бүтээгдэхүүн", link: "/products" },
     { text: "Хадгалсан", link: "/saved-products" },
+    { text: "Cart", link: "/cart" },
     { text: "Нэмэх", link: "/add-product" },
     { text: "Чат", link: "/chat" }
   ];

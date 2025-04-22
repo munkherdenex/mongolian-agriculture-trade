@@ -72,6 +72,24 @@ const ProductDetails = () => {
     }
   };
 
+  const handleAddToCart = () => {
+    if (!user) return alert("Та нэвтэрч орно уу.");
+    if (!product?.id) return alert("Барааны мэдээлэл бүрэн биш байна.");
+  
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const alreadyInCart = existingCart.find((item) => item.id === product.id);
+  
+    if (alreadyInCart) {
+      alert("Энэ бараа таны сагсанд аль хэдийн нэмэгдсэн байна.");
+      return;
+    }
+  
+    const updatedCart = [...existingCart, product];
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    alert("Бараа сагсанд нэмэгдлээ!");
+  };
+  
+
   if (loading) {
     return (
       <Container>
@@ -134,23 +152,32 @@ const ProductDetails = () => {
 
               {user && product?.seller_id !== user.id && (
                 <Stack direction="row" spacing={2} mt={3}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<ChatIcon />}
-                    onClick={handleChatClick}
-                  >
-                    Худалдагчтай чатлах
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    startIcon={<SaveIcon />}
-                    onClick={handleSaveClick}
-                  >
-                    Хадгалах
-                  </Button>
-                </Stack>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<ChatIcon />}
+                  onClick={handleChatClick}
+                >
+                  Худалдагчтай чатлах
+                </Button>
+              
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<SaveIcon />}
+                  onClick={handleSaveClick}
+                >
+                  Хадгалах
+                </Button>
+              
+                <Button
+                  variant="outlined"
+                  color="success"
+                  onClick={handleAddToCart}
+                >
+                  Сагсанд нэмэх
+                </Button>
+              </Stack>
               )}
             </CardContent>
           </Grid>

@@ -13,6 +13,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import SavedProducts from "./pages/SavedProducts";
+import Cart from "./pages/Cart";
 import Navbar from "./components/Navbar";
 import AddProduct from "./pages/AddProduct";
 import ProductDetails from './pages/ProductDetails';
@@ -64,6 +65,7 @@ function AppContent() {
         <Route path="/add-product" element={<AddProduct />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/chat/:productId/:recipientId" element={<ChatPage />} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/my-products" element={<MyProducts />} />
         <Route element={<PrivateRoute />}>
           <Route path="/products" element={<Products />} />

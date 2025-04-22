@@ -4,6 +4,7 @@ const pool = require("./db");
 require("dotenv").config();
 const http = require("http");
 const { Server } = require("socket.io");
+const orderRoutes = require("./routes/orders");
 
 const app = express();
 const server = http.createServer(app);
@@ -23,6 +24,7 @@ app.use("/api/saved-products", require("./routes/savedProducts"));
 app.use("/api/contact", require("./routes/contact"));
 app.use("/api/my-products", require("./routes/myProducts"));
 app.use("/api/chat", require("./routes/chat"));
+app.use("/api/orders", orderRoutes);
 
 // 404 Fallback
 app.use((req, res) => {
