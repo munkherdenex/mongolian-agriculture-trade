@@ -7,25 +7,37 @@ function Cart() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
+    const user = JSON.parse(localStorage.getItem("user")); // or however you're storing user
+    if (user) {
+      const cartKey = `cart_${user.id}`;
+      const storedCart = localStorage.getItem(cartKey);
+      if (storedCart) {
+        setCartItems(JSON.parse(storedCart));
+      }
     }
   }, []);
 
   const removeFromCart = (productId) => {
     const updatedCart = cartItems.filter((item) => item.id !== productId);
     setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      const cartKey = `cart_${user.id}`;
+      localStorage.setItem(cartKey, JSON.stringify(updatedCart)); 
+    }
   };
 
   const handleConfirmOrder = async () => {
-    if (!recipientName || !phone || !address) {
+    if (!recipientName.trim() || !phone.trim() || !address.trim()) {
       setMessage("Бүх талбарыг бөглөнө үү.");
       return;
     }
+
+    setIsSubmitting(true);
   
     try {
       const token = localStorage.getItem("token");
@@ -50,13 +62,15 @@ function Cart() {
       if (orderResponse.status === 200) {
         // Step 2: For each product, send a chat message to the seller
         for (const item of cartItems) {
+          const messageText = `Таны "${item.name}" бараанд шинэ захиалга ирлээ!\n` +
+                              `🔗 Холбоос: http://localhost:3000/product/${item.id}`;
           try {
             await axios.post(
               `http://localhost:5000/api/chat/sendMessage`,
               {
                 productId: item.id,
-                recipientId: item.seller_id, // you must have `seller_id` in your cart items
-                message: `Таны "${item.name}" бараанд шинэ захиалга ирлээ!`,
+                recipientId: item.seller_id,
+                message: messageText,
               },
               {
                 headers: {
@@ -69,19 +83,27 @@ function Cart() {
             console.error(`Failed to send message to seller for product ${item.id}`, err);
           }
         }
+        
   
         // Step 3: Clear cart and reset form
-        setMessage("✅ Захиалга амжилттай илгээгдлээ!");
-        setCartItems([]);
-        localStorage.removeItem("cart");
-        setRecipientName("");
-        setPhone("");
-        setAddress("");
+        const user = JSON.parse(localStorage.getItem("user"));
+if (user) {
+  const cartKey = `cart_${user.id}`;
+  localStorage.removeItem(cartKey);
+}
+
+setMessage("✅ Захиалга амжилттай илгээгдлээ!");
+setCartItems([]);
+setRecipientName("");
+setPhone("");
+setAddress("");
       }
     } catch (err) {
       console.error("❌ Order confirmation failed:", err);
       setMessage("Алдаа гарлаа. Дахин оролдоно уу.");
     }
+
+    setIsSubmitting(false);
   };
   
 
@@ -129,7 +151,9 @@ function Cart() {
           onChange={(e) => setAddress(e.target.value)}
         />
         <br />
-        <button onClick={handleConfirmOrder}>Захиалгыг баталгаажуулах</button>
+        <button onClick={handleConfirmOrder} disabled={isSubmitting}>
+          {isSubmitting ? "Илгээж байна..." : "Захиалгыг баталгаажуулах"}
+        </button>
         {message && (
           <p style={{ marginTop: "10px", color: message.includes("✅") ? "green" : "red" }}>
             {message}

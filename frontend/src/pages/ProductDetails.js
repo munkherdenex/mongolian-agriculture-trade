@@ -76,7 +76,10 @@ const ProductDetails = () => {
     if (!user) return alert("Та нэвтэрч орно уу.");
     if (!product?.id) return alert("Барааны мэдээлэл бүрэн биш байна.");
   
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    // Create a unique cart key per user
+    const cartKey = `cart_${user.id}`;
+  
+    const existingCart = JSON.parse(localStorage.getItem(cartKey)) || [];
     const alreadyInCart = existingCart.find((item) => item.id === product.id);
   
     if (alreadyInCart) {
@@ -85,7 +88,7 @@ const ProductDetails = () => {
     }
   
     const updatedCart = [...existingCart, product];
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    localStorage.setItem(cartKey, JSON.stringify(updatedCart));
     alert("Бараа сагсанд нэмэгдлээ!");
   };
   
