@@ -1,5 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Box,
+  Paper,
+  Divider,
+  Alert,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -10,7 +25,7 @@ function Cart() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user")); // or however you're storing user
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       const cartKey = `cart_${user.id}`;
       const storedCart = localStorage.getItem(cartKey);
@@ -23,11 +38,11 @@ function Cart() {
   const removeFromCart = (productId) => {
     const updatedCart = cartItems.filter((item) => item.id !== productId);
     setCartItems(updatedCart);
-  
+
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       const cartKey = `cart_${user.id}`;
-      localStorage.setItem(cartKey, JSON.stringify(updatedCart)); 
+      localStorage.setItem(cartKey, JSON.stringify(updatedCart));
     }
   };
 
@@ -38,11 +53,10 @@ function Cart() {
     }
 
     setIsSubmitting(true);
-  
+
     try {
       const token = localStorage.getItem("token");
-  
-      // Step 1: Confirm the order
+
       const orderResponse = await axios.post(
         "http://localhost:5000/api/orders/confirm",
         {
@@ -58,15 +72,15 @@ function Cart() {
           },
         }
       );
-  
+
       if (orderResponse.status === 200) {
-        // Step 2: For each product, send a chat message to the seller
         for (const item of cartItems) {
           const messageText = `Таны "${item.name}" бараанд шинэ захиалга ирлээ!\n` +
-                              `🔗 Холбоос: http://localhost:3000/product/${item.id}`;
+            `🔗 Холбоос: http://localhost:3000/product/${item.id}`;
+
           try {
             await axios.post(
-              `http://localhost:5000/api/chat/sendMessage`,
+              "http://localhost:5000/api/chat/sendMessage",
               {
                 productId: item.id,
                 recipientId: item.seller_id,
@@ -83,20 +97,18 @@ function Cart() {
             console.error(`Failed to send message to seller for product ${item.id}`, err);
           }
         }
-        
-  
-        // Step 3: Clear cart and reset form
-        const user = JSON.parse(localStorage.getItem("user"));
-if (user) {
-  const cartKey = `cart_${user.id}`;
-  localStorage.removeItem(cartKey);
-}
 
-setMessage("✅ Захиалга амжилттай илгээгдлээ!");
-setCartItems([]);
-setRecipientName("");
-setPhone("");
-setAddress("");
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (user) {
+          const cartKey = `cart_${user.id}`;
+          localStorage.removeItem(cartKey);
+        }
+
+        setMessage("✅ Захиалга амжилттай илгээгдлээ!");
+        setCartItems([]);
+        setRecipientName("");
+        setPhone("");
+        setAddress("");
       }
     } catch (err) {
       console.error("❌ Order confirmation failed:", err);
@@ -105,62 +117,89 @@ setAddress("");
 
     setIsSubmitting(false);
   };
-  
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Миний сагс</h2>
+    <Container maxWidth="sm">
+      <Typography variant="h4" sx={{ mt: 4, mb: 3, fontWeight: "bold" }}>
+        Миний сагс
+      </Typography>
+
       {cartItems.length === 0 ? (
-        <p>Сагс хоосон байна.</p>
+        <Typography variant="body1">Сагс хоосон байна.</Typography>
       ) : (
-        <ul>
-          {cartItems.map((item) => (
-            <li key={item.id} style={{ marginBottom: "10px" }}>
-              <strong>{item.name}</strong> — {item.price}₮
-              <button
-                onClick={() => removeFromCart(item.id)}
-                style={{ marginLeft: "10px" }}
-              >
-                Устгах
-              </button>
-            </li>
-          ))}
-        </ul>
+        <Paper variant="outlined" sx={{ mb: 3 }}>
+          <List>
+            {cartItems.map((item) => (
+              <div key={item.id}>
+                <ListItem
+                  secondaryAction={
+                    <IconButton edge="end" onClick={() => removeFromCart(item.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  }
+                >
+                  <ListItemText
+                    primary={item.name}
+                    secondary={`${item.price}₮`}
+                  />
+                </ListItem>
+                <Divider />
+              </div>
+            ))}
+          </List>
+        </Paper>
       )}
 
-      <div className="order-form" style={{ marginTop: "20px" }}>
-        <h3>Захиалгын мэдээлэл</h3>
-        <input
-          type="text"
-          placeholder="Хүлээн авагчийн нэр"
+      <Box component="form" noValidate autoComplete="off">
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Захиалгын мэдээлэл
+        </Typography>
+
+        <TextField
+          label="Хүлээн авагчийн нэр"
+          fullWidth
+          variant="outlined"
           value={recipientName}
           onChange={(e) => setRecipientName(e.target.value)}
+          sx={{ mb: 2 }}
         />
-        <br />
-        <input
-          type="text"
-          placeholder="Утасны дугаар"
+        <TextField
+          label="Утасны дугаар"
+          fullWidth
+          variant="outlined"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          sx={{ mb: 2 }}
         />
-        <br />
-        <input
-          type="text"
-          placeholder="Хүргүүлэх хаяг"
+        <TextField
+          label="Хүргүүлэх хаяг"
+          fullWidth
+          variant="outlined"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          sx={{ mb: 2 }}
         />
-        <br />
-        <button onClick={handleConfirmOrder} disabled={isSubmitting}>
+
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={handleConfirmOrder}
+          disabled={isSubmitting || cartItems.length === 0}
+        >
           {isSubmitting ? "Илгээж байна..." : "Захиалгыг баталгаажуулах"}
-        </button>
+        </Button>
+
         {message && (
-          <p style={{ marginTop: "10px", color: message.includes("✅") ? "green" : "red" }}>
+          <Alert
+            severity={message.includes("✅") ? "success" : "error"}
+            sx={{ mt: 2 }}
+          >
             {message}
-          </p>
+          </Alert>
         )}
-      </div>
-    </div>
+      </Box>
+    </Container>
   );
 }
 

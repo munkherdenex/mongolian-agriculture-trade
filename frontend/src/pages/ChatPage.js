@@ -27,6 +27,8 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState("");
   const [notifications, setNotifications] = useState({});
   const messagesEndRef = useRef(null);
+  const notificationSound = useRef(new Audio('/notification.mp3'));
+
 
   // Register user to socket
   useEffect(() => {
@@ -58,20 +60,43 @@ const ChatPage = () => {
   }, [productId, sellerId, user.id]);
 
   // Load messages
-  useEffect(() => {
-    if (!selectedConv) return;
+  const lastMessageIdRef = useRef(null);
 
-    const fetchMessages = () => {
-      axios
-        .get(`http://localhost:5000/api/chat/messages/${selectedConv.id}`)
-        .then((res) => setMessages(res.data))
-        .catch((err) => console.error("Error fetching messages:", err));
-    };
+useEffect(() => {
+  if (!selectedConv || !user) return;
 
-    fetchMessages();
-    const intervalId = setInterval(fetchMessages, 3000);
-    return () => clearInterval(intervalId);
-  }, [selectedConv]);
+  const fetchMessages = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/chat/messages/${selectedConv.id}`);
+      const newMessages = res.data;
+
+      if (newMessages.length > 0) {
+        const latestMessage = newMessages[newMessages.length - 1];
+
+        if (
+          lastMessageIdRef.current &&
+          latestMessage.id !== lastMessageIdRef.current &&
+          latestMessage.sender_id !== user.id
+        ) {
+          notificationSound.current.play();
+        }
+
+        lastMessageIdRef.current = latestMessage.id;
+      }
+
+      setMessages(newMessages);
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
+  };
+
+  fetchMessages();
+  const intervalId = setInterval(fetchMessages, 3000);
+
+  return () => clearInterval(intervalId);
+}, [selectedConv, user]);
+
+  
 
   // Send message
   const sendMessage = () => {
