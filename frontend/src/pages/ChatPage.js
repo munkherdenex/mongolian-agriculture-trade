@@ -12,9 +12,7 @@ import {
   TextField,
   Button,
   Paper,
-  Badge,
 } from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import { DateTime } from "luxon";
 
 const ChatPage = () => {
@@ -25,19 +23,14 @@ const ChatPage = () => {
   const [selectedConv, setSelectedConv] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [notifications, setNotifications] = useState({});
   const messagesEndRef = useRef(null);
-  const notificationSound = useRef(new Audio('/notification.mp3'));
 
-
-  // Register user to socket
   useEffect(() => {
     if (user && user.id) {
       socket.emit("registerUser", user.id);
     }
   }, [user]);
 
-  // Load all conversations
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/chat/conversations/${user.id}`)
@@ -45,7 +38,6 @@ const ChatPage = () => {
       .catch((err) => console.error("Error fetching conversations:", err));
   }, [user.id]);
 
-  // Start new conversation from product page
   useEffect(() => {
     if (productId && sellerId) {
       axios
@@ -59,46 +51,41 @@ const ChatPage = () => {
     }
   }, [productId, sellerId, user.id]);
 
-  // Load messages
   const lastMessageIdRef = useRef(null);
+  const isInitialLoadRef = useRef(true);
 
-useEffect(() => {
-  if (!selectedConv || !user) return;
-
-  const fetchMessages = async () => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/chat/messages/${selectedConv.id}`);
-      const newMessages = res.data;
-
-      if (newMessages.length > 0) {
-        const latestMessage = newMessages[newMessages.length - 1];
-
-        if (
-          lastMessageIdRef.current &&
-          latestMessage.id !== lastMessageIdRef.current &&
-          latestMessage.sender_id !== user.id
-        ) {
-          notificationSound.current.play();
+  useEffect(() => {
+    if (!selectedConv || !user) return;
+  
+    let isMounted = true;
+  
+    const fetchMessages = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/chat/messages/${selectedConv.id}`);
+        if (isMounted) {
+          const newMessages = res.data;
+          if (newMessages.length > 0) {
+            const latestMessage = newMessages[newMessages.length - 1];
+            lastMessageIdRef.current = latestMessage.id;
+          }
+          setMessages(newMessages);
+          isInitialLoadRef.current = false;
         }
-
-        lastMessageIdRef.current = latestMessage.id;
+      } catch (err) {
+        console.error("Error fetching messages:", err);
       }
-
-      setMessages(newMessages);
-    } catch (err) {
-      console.error("Error fetching messages:", err);
-    }
-  };
-
-  fetchMessages();
-  const intervalId = setInterval(fetchMessages, 3000);
-
-  return () => clearInterval(intervalId);
-}, [selectedConv, user]);
-
+    };
+  
+    fetchMessages();
+    const intervalId = setInterval(fetchMessages, 3000);
+  
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, [selectedConv, user]);
   
 
-  // Send message
   const sendMessage = () => {
     if (!newMessage.trim()) return;
 
@@ -122,16 +109,10 @@ useEffect(() => {
     setNewMessage("");
   };
 
-  // Listen for incoming messages
   useEffect(() => {
     const handleReceiveMessage = (data) => {
       if (data.conversation_id === selectedConv?.id) {
         setMessages((prev) => [...prev, data]);
-      } else {
-        setNotifications((prev) => ({
-          ...prev,
-          [data.conversation_id]: (prev[data.conversation_id] || 0) + 1,
-        }));
       }
     };
 
@@ -139,18 +120,12 @@ useEffect(() => {
     return () => socket.off("receive_message", handleReceiveMessage);
   }, [selectedConv]);
 
-  // Scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSelectConversation = (conv) => {
     setSelectedConv(conv);
-    setNotifications((prev) => {
-      const updated = { ...prev };
-      delete updated[conv.id];
-      return updated;
-    });
   };
 
   if (!user) {
@@ -159,7 +134,6 @@ useEffect(() => {
 
   return (
     <Box sx={{ display: "flex", height: "90vh", bgcolor: "#f5f5f5" }}>
-      {/* Sidebar */}
       <Box
         sx={{
           width: "25%",
@@ -184,11 +158,6 @@ useEffect(() => {
                   primary={conv.product_title}
                   secondary={conv.other_user_name}
                 />
-                {notifications[conv.id] && (
-                  <Badge badgeContent={notifications[conv.id]} color="error">
-                    <NotificationsIcon fontSize="small" />
-                  </Badge>
-                )}
               </ListItem>
               <Divider />
             </React.Fragment>
@@ -196,7 +165,6 @@ useEffect(() => {
         </List>
       </Box>
 
-      {/* Chat Window */}
       <Box sx={{ width: "75%", p: 3, display: "flex", flexDirection: "column" }}>
         {selectedConv ? (
           <>
@@ -291,7 +259,7 @@ useEffect(() => {
                 placeholder="Мессеж бичих..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
               />
               <Button variant="contained" color="primary" onClick={sendMessage}>
                 Илгээх

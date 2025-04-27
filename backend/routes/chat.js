@@ -18,7 +18,7 @@ router.get("/messages/:conversationId", async (req, res) => {
   }
 });
 
-// ✅ GET users from conversations
+// GET users from conversations
 router.get("/users", async (req, res) => {
   const { userId } = req.query;
 
@@ -46,7 +46,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-// GET all conversations of a user
+// GET all conversations of a user (without unread_count)
 router.get("/conversations/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -122,6 +122,24 @@ router.post("/send", async (req, res) => {
   } catch (err) {
     console.error("Error sending message:", err);
     res.status(500).json({ error: "Failed to send message" });
+  }
+});
+
+// Mark messages as read
+router.patch("/read", async (req, res) => {
+  const { conversation_id, user_id } = req.body;
+
+  try {
+    await pool.query(`
+      UPDATE messages
+      SET is_read = true
+      WHERE conversation_id = $1 AND sender_id != $2 AND is_read = false
+    `, [conversation_id, user_id]);
+
+    res.json({ message: "Messages marked as read." });
+  } catch (err) {
+    console.error("Error marking messages as read:", err);
+    res.status(500).json({ error: "Failed to mark messages as read" });
   }
 });
 
