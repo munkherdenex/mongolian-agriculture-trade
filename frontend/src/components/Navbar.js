@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext } from "react"; 
 import {
   AppBar,
   Toolbar,
@@ -34,6 +34,17 @@ function Navbar() {
     { text: "Нэмэх", link: "/add-product" },
     { text: "Чат", link: "/chat" }
   ];
+
+  const userMenuItems = user
+    ? [
+        { text: `Сайн байна уу, ${user.name}`, link: "#" },
+        { text: "Миний бүтээгдэхүүн", link: "/my-products" },
+        { text: "Гарах", link: "#", onClick: logout }
+      ]
+    : [
+        { text: "Нэвтрэх", link: "/login" },
+        { text: "Бүртгүүлэх", link: "/signup" }
+      ];
 
   return (
     <>
@@ -101,28 +112,17 @@ function Navbar() {
                 <ListItemText primary={item.text} />
               </ListItem>
             ))}
-            {user ? (
-              <>
-                <ListItem>
-                  <ListItemText primary={`Сайн байна уу, ${user.name}`} />
-                </ListItem>
-                <ListItem button component={Link} to="/my-products">
-                  <ListItemText primary="Миний бүтээгдэхүүн" />
-                </ListItem>
-                <ListItem button onClick={logout}>
-                  <ListItemText primary="Гарах" />
-                </ListItem>
-              </>
-            ) : (
-              <>
-                <ListItem button component={Link} to="/login">
-                  <ListItemText primary="Нэвтрэх" />
-                </ListItem>
-                <ListItem button component={Link} to="/signup">
-                  <ListItemText primary="Бүртгүүлэх" />
-                </ListItem>
-              </>
-            )}
+            {userMenuItems.map((item) => (
+              <ListItem
+                button
+                component={item.link === "#" ? "div" : Link}
+                to={item.link !== "#" ? item.link : undefined}
+                key={item.text}
+                onClick={item.onClick}
+              >
+                <ListItemText primary={item.text} />
+              </ListItem>
+            ))}
           </List>
         </Box>
       </Drawer>

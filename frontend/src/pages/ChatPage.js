@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import socket from "../socket";
 import axios from "axios";
 import {
@@ -17,7 +17,8 @@ import { DateTime } from "luxon";
 
 const ChatPage = () => {
   const { productId, sellerId } = useParams();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
   const [conversations, setConversations] = useState([]);
   const [selectedConv, setSelectedConv] = useState(null);
@@ -27,10 +28,14 @@ const ChatPage = () => {
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (user && user.id) {
-      socket.emit("registerUser", user.id);
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser) {
+      navigate("/login");
+    } else {
+      setUser(storedUser);
+      socket.emit("registerUser", storedUser.id);
     }
-  }, [user]);
+  }, [navigate]);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -41,7 +46,7 @@ const ChatPage = () => {
   }, [user?.id]);
 
   useEffect(() => {
-    if (productId && sellerId) {
+    if (productId && sellerId && user?.id) {
       axios
         .post("http://localhost:5000/api/chat/start", {
           product_id: productId,
@@ -108,19 +113,19 @@ const ChatPage = () => {
   useEffect(() => {
     const handleReceiveMessage = (data) => {
       const isCurrentConversation = selectedConv?.id === data.conversation_id;
-      const isCurrentUser = data.sender_id === user.id;
-    
+      const isCurrentUser = data.sender_id === user?.id;
+
       if (isCurrentConversation) {
         setMessages((prev) => [...prev, data]);
       }
-    
+
       setConversations((prevConversations) =>
         prevConversations.map((conv) => {
           if (conv.id === data.conversation_id) {
             return {
               ...conv,
               unread_count: isCurrentConversation || isCurrentUser
-                ? conv.unread_count // no change
+                ? conv.unread_count
                 : (conv.unread_count || 0) + 1,
               last_message: data.message,
             };
@@ -129,12 +134,10 @@ const ChatPage = () => {
         })
       );
     };
-    
-    
 
     socket.on("receive_message", handleReceiveMessage);
     return () => socket.off("receive_message", handleReceiveMessage);
-  }, [user.id, selectedConv?.id]);
+  }, [user?.id, selectedConv?.id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -149,7 +152,6 @@ const ChatPage = () => {
         user_id: user.id,
       });
 
-      // Update conversations state locally
       setConversations((prevConversations) =>
         prevConversations.map((c) =>
           c.id === conv.id ? { ...c, unread_count: 0 } : c
@@ -163,7 +165,7 @@ const ChatPage = () => {
   };
 
   if (!user) {
-    return <Typography>Нэвтэрч орно уу...</Typography>;
+    return null; // already redirected
   }
 
   return (
