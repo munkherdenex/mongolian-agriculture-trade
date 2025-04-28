@@ -46,7 +46,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-// GET all conversations of a user (without unread_count)
+// GET all conversations of a user (with unread_count)
 router.get("/conversations/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -55,7 +55,14 @@ router.get("/conversations/:userId", async (req, res) => {
       SELECT 
         c.*,
         p.title AS product_title,
-        u.name AS other_user_name
+        u.name AS other_user_name,
+        (
+          SELECT COUNT(*)
+          FROM messages m
+          WHERE m.conversation_id = c.id
+            AND m.sender_id != $1
+            AND m.is_read = false
+        ) AS unread_count
       FROM conversations c
       JOIN products p ON c.product_id = p.id
       JOIN users u ON u.id = (
@@ -73,6 +80,7 @@ router.get("/conversations/:userId", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch conversations" });
   }
 });
+
 
 // Start a new conversation (or get existing one)
 router.post("/start", async (req, res) => {
@@ -126,6 +134,7 @@ router.post("/send", async (req, res) => {
 });
 
 // Mark messages as read
+// backend/chat.js
 router.patch("/read", async (req, res) => {
   const { conversation_id, user_id } = req.body;
 
@@ -133,7 +142,9 @@ router.patch("/read", async (req, res) => {
     await pool.query(`
       UPDATE messages
       SET is_read = true
-      WHERE conversation_id = $1 AND sender_id != $2 AND is_read = false
+      WHERE conversation_id = $1
+        AND sender_id != $2
+        AND is_read = false
     `, [conversation_id, user_id]);
 
     res.json({ message: "Messages marked as read." });
@@ -142,5 +153,6 @@ router.patch("/read", async (req, res) => {
     res.status(500).json({ error: "Failed to mark messages as read" });
   }
 });
+
 
 module.exports = router;

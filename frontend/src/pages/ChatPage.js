@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import socket from "../socket";
 import axios from "axios";
@@ -24,6 +24,7 @@ const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     if (user && user.id) {
@@ -32,11 +33,12 @@ const ChatPage = () => {
   }, [user]);
 
   useEffect(() => {
+    if (!user?.id) return;
     axios
       .get(`http://localhost:5000/api/chat/conversations/${user.id}`)
       .then((res) => setConversations(res.data))
       .catch((err) => console.error("Error fetching conversations:", err));
-  }, [user.id]);
+  }, [user?.id]);
 
   useEffect(() => {
     if (productId && sellerId) {
@@ -49,42 +51,36 @@ const ChatPage = () => {
         .then((res) => setSelectedConv(res.data))
         .catch((err) => console.error("Error starting conversation:", err));
     }
-  }, [productId, sellerId, user.id]);
+  }, [productId, sellerId, user?.id]);
 
-  const lastMessageIdRef = useRef(null);
-  const isInitialLoadRef = useRef(true);
+  const fetchMessages = useCallback(async (convId) => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/chat/messages/${convId}`);
+      setMessages(res.data);
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
+  }, []);
 
   useEffect(() => {
-    if (!selectedConv || !user) return;
-  
-    let isMounted = true;
-  
-    const fetchMessages = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/api/chat/messages/${selectedConv.id}`);
-        if (isMounted) {
-          const newMessages = res.data;
-          if (newMessages.length > 0) {
-            const latestMessage = newMessages[newMessages.length - 1];
-            lastMessageIdRef.current = latestMessage.id;
-          }
-          setMessages(newMessages);
-          isInitialLoadRef.current = false;
-        }
-      } catch (err) {
-        console.error("Error fetching messages:", err);
+    if (!selectedConv?.id) return;
+
+    fetchMessages(selectedConv.id);
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = setInterval(() => {
+      fetchMessages(selectedConv.id);
+    }, 3000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
-  
-    fetchMessages();
-    const intervalId = setInterval(fetchMessages, 3000);
-  
-    return () => {
-      isMounted = false;
-      clearInterval(intervalId);
-    };
-  }, [selectedConv, user]);
-  
+  }, [selectedConv, fetchMessages]);
 
   const sendMessage = () => {
     if (!newMessage.trim()) return;
@@ -111,21 +107,59 @@ const ChatPage = () => {
 
   useEffect(() => {
     const handleReceiveMessage = (data) => {
-      if (data.conversation_id === selectedConv?.id) {
+      const isCurrentConversation = selectedConv?.id === data.conversation_id;
+      const isCurrentUser = data.sender_id === user.id;
+    
+      if (isCurrentConversation) {
         setMessages((prev) => [...prev, data]);
       }
+    
+      setConversations((prevConversations) =>
+        prevConversations.map((conv) => {
+          if (conv.id === data.conversation_id) {
+            return {
+              ...conv,
+              unread_count: isCurrentConversation || isCurrentUser
+                ? conv.unread_count // no change
+                : (conv.unread_count || 0) + 1,
+              last_message: data.message,
+            };
+          }
+          return conv;
+        })
+      );
     };
+    
+    
 
     socket.on("receive_message", handleReceiveMessage);
     return () => socket.off("receive_message", handleReceiveMessage);
-  }, [selectedConv]);
+  }, [user.id, selectedConv?.id]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSelectConversation = (conv) => {
+  const handleSelectConversation = async (conv) => {
     setSelectedConv(conv);
+
+    try {
+      await axios.patch("http://localhost:5000/api/chat/read", {
+        conversation_id: conv.id,
+        user_id: user.id,
+      });
+
+      // Update conversations state locally
+      setConversations((prevConversations) =>
+        prevConversations.map((c) =>
+          c.id === conv.id ? { ...c, unread_count: 0 } : c
+        )
+      );
+
+      fetchMessages(conv.id);
+    } catch (error) {
+      console.error("Error marking messages as read:", error);
+    }
   };
 
   if (!user) {
@@ -134,6 +168,7 @@ const ChatPage = () => {
 
   return (
     <Box sx={{ display: "flex", height: "90vh", bgcolor: "#f5f5f5" }}>
+      {/* Sidebar */}
       <Box
         sx={{
           width: "25%",
@@ -155,7 +190,25 @@ const ChatPage = () => {
                 selected={selectedConv?.id === conv.id}
               >
                 <ListItemText
-                  primary={conv.product_title}
+                  primary={
+                    <span style={{ fontWeight: conv.unread_count > 0 ? "bold" : "normal" }}>
+                      {conv.product_title}
+                      {conv.unread_count > 0 && (
+                        <span
+                          style={{
+                            backgroundColor: "red",
+                            color: "white",
+                            borderRadius: "50%",
+                            padding: "2px 6px",
+                            fontSize: "12px",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          {conv.unread_count}
+                        </span>
+                      )}
+                    </span>
+                  }
                   secondary={conv.other_user_name}
                 />
               </ListItem>
@@ -165,6 +218,7 @@ const ChatPage = () => {
         </List>
       </Box>
 
+      {/* Chat Content */}
       <Box sx={{ width: "75%", p: 3, display: "flex", flexDirection: "column" }}>
         {selectedConv ? (
           <>
@@ -195,7 +249,8 @@ const ChatPage = () => {
                     .toLocal()
                     .toRelative({ locale: "mn" });
 
-                  const senderName = msg.sender_name || (isCurrentUser ? user.username : selectedConv.other_user_name);
+                  const senderName =
+                    msg.sender_name || (isCurrentUser ? user.username : selectedConv.other_user_name);
 
                   return (
                     <Box
