@@ -1,65 +1,110 @@
 import React from "react";
-import { Typography, Container, Box, Grid, Paper } from "@mui/material";
-import "../App.css";
+import {
+  Typography,
+  Container,
+  Box,
+  Grid,
+  Paper,
+  Divider
+} from "@mui/material";
+import Footer from "../components/Footer"; 
 
 function About() {
   return (
-    <Container>
-      <Box sx={{ textAlign: "center", py: 4, mb: 3 }}>
-        <Typography variant="h3" gutterBottom>
-          Бидний тухай
-        </Typography>
-        <Typography variant="h6" color="textSecondary">
-          Монголын хөдөө аж ахуйн худалдааг хөгжүүлэх эрхэм зорилготой
-          платформ
-        </Typography>
-      </Box>
+    <>
+      <Container sx={{ py: 6 }}>
+        <Box sx={{ textAlign: "center", mb: 5 }}>
+          <Typography variant="h3" fontWeight={700} gutterBottom>
+            Бидний тухай
+          </Typography>
+          <Typography variant="h6" color="text.secondary" maxWidth={600} mx="auto">
+            Монголын хөдөө аж ахуйн худалдааг хөгжүүлэх эрхэм зорилготой платформ
+          </Typography>
+        </Box>
 
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Эрхэм зорилго
-        </Typography>
-        <Typography variant="body1">
-          Бид фермерүүд болон худалдан авагчдыг холбож, хөдөө аж ахуйн
-          бүтээгдэхүүн худалдаалах илүү хялбар, найдвартай орчин бүрдүүлэхийг
-          зорьж байна.
-        </Typography>
-      </Box>
-
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Алсын хараа
-        </Typography>
-        <Typography variant="body1">
-          Монголын хөдөө аж ахуйн салбарыг дижиталчлан, зах зээлийн үр ашигтай
-          уялдаа холбоог нэмэгдүүлэх нь бидний зорилго юм.
-        </Typography>
-      </Box>
-
-      <Box className="about-section" sx={{ mt: 5 }}>
-        <Typography variant="h4" gutterBottom>Яагаад бид?</Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
-            <Paper elevation={2} sx={{ p: 2 }}>
-              <Typography variant="h6">🚜 Хялбар борлуулалт</Typography>
-              <Typography variant="body2">Фермерүүдэд бүтээгдэхүүнээ онлайнд байршуулж, борлуулах бүрэн боломж.</Typography>
-            </Paper>
+        <Grid container spacing={5}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h5" fontWeight={600} gutterBottom>
+              🎯 Эрхэм зорилго
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Бид фермерүүд болон худалдан авагчдыг холбож, хөдөө аж ахуйн
+              бүтээгдэхүүн худалдаалах илүү хялбар, найдвартай орчин бүрдүүлэхийг
+              зорьж байна.
+            </Typography>
           </Grid>
-          <Grid item xs={12} md={4}>
-            <Paper elevation={2} sx={{ p: 2 }}>
-              <Typography variant="h6">📈 Зах зээлийн өргөтгөл</Typography>
-              <Typography variant="body2">Шинэ харилцагчидтай танилцаж, бизнесээ хөгжүүлэх боломж.</Typography>
-            </Paper>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Paper elevation={2} sx={{ p: 2 }}>
-              <Typography variant="h6">🌍 Нийгэмд ээлтэй</Typography>
-              <Typography variant="body2">Бид хөдөө нутгийн фермерүүдийг дэмжсэн нийгмийн сайн талтай шийдэл санал болгодог.</Typography>
-            </Paper>
+
+          <Grid item xs={12} md={6}>
+            <Typography variant="h5" fontWeight={600} gutterBottom>
+              🔭 Алсын хараа
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Монголын хөдөө аж ахуйн салбарыг дижиталчлан, зах зээлийн үр ашигтай
+              уялдаа холбоог нэмэгдүүлэх нь бидний зорилго юм.
+            </Typography>
           </Grid>
         </Grid>
-      </Box>
-    </Container>
+
+        <Divider sx={{ my: 6 }} />
+
+        <Box sx={{ textAlign: "center", mb: 4 }}>
+          <Typography variant="h4" fontWeight={600} gutterBottom>
+            Яагаад бид?
+          </Typography>
+          <Typography variant="body1" color="text.secondary" maxWidth={700} mx="auto">
+            Бид фермерүүд болон худалдан авагчдад бодитой үнэ цэнэ, хялбар хэрэглээ,
+            өргөн зах зээлийн боломжуудыг санал болгодог.
+          </Typography>
+        </Box>
+
+        <Grid container spacing={4}>
+          {[
+            {
+              icon: "🚜",
+              title: "Хялбар борлуулалт",
+              description: "Фермерүүдэд бүтээгдэхүүнээ онлайнд байршуулж, борлуулах бүрэн боломж."
+            },
+            {
+              icon: "📈",
+              title: "Зах зээлийн өргөтгөл",
+              description: "Шинэ харилцагчидтай танилцаж, бизнесээ хөгжүүлэх боломж."
+            },
+            {
+              icon: "🌍",
+              title: "Нийгэмд ээлтэй",
+              description: "Хөдөө нутгийн фермерүүдийг дэмжсэн нийгмийн сайн талтай шийдэл."
+            }
+          ].map((item, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <Paper
+                elevation={3}
+                sx={{
+                  p: 3,
+                  textAlign: "center",
+                  transition: "0.3s",
+                  "&:hover": {
+                    boxShadow: 6,
+                    transform: "translateY(-4px)"
+                  }
+                }}
+              >
+                <Typography variant="h3" mb={1}>
+                  {item.icon}
+                </Typography>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  {item.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {item.description}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      <Footer />
+    </>
   );
 }
 
