@@ -139,19 +139,32 @@ const ProductDetails = () => {
               </Typography>
 
               <Stack spacing={1} sx={{ mb: 2 }}>
-                <Typography variant="h6">
-                  💰 Үнэ: <strong>{product.price ? `${product.price}₮` : "Мэдээлэл байхгүй"}</strong>
-                </Typography>
-                <Typography variant="h6">
-                  📍 Байршил: <strong>{product.location || "Мэдээлэл байхгүй"}</strong>
-                </Typography>
-                <Typography variant="h6">
-                  ☎️ Холбоо барих: <strong>{product.contact || "Байхгүй"}</strong>
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Нийтэлсэн: {product.poster_name || "Тодорхойгүй"}
-                </Typography>
-              </Stack>
+               <Typography variant="h6">
+                 💰 Үнэ: <strong>{product.price ? `${product.price}₮` : "Мэдээлэл байхгүй"}</strong>
+               </Typography>
+
+               {/* ✅ Add this new Quantity + Unit line */}
+               <Typography variant="h6">
+                 📦 Тоо хэмжээ:{" "}
+                 <strong>
+                   {product.quantity && product.unit
+                     ? `${product.quantity} ${product.unit}`
+                     : "Мэдээлэл байхгүй"}
+                 </strong>
+               </Typography>
+
+               <Typography variant="h6">
+                 📍 Байршил: <strong>{product.location || "Мэдээлэл байхгүй"}</strong>
+               </Typography>
+
+               <Typography variant="h6">
+                 ☎️ Холбоо барих: <strong>{product.contact || "Байхгүй"}</strong>
+               </Typography>
+             
+               <Typography variant="body2" color="text.secondary">
+                 Нийтэлсэн: {product.poster_name || "Тодорхойгүй"}
+               </Typography>
+             </Stack>
 
               {user && product?.seller_id !== user.id && (
                 <Stack direction="row" spacing={2} mt={3}>

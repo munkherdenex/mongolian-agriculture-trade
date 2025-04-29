@@ -10,21 +10,21 @@ router.post("/confirm", authenticateUser, async (req, res) => {
     recipient_name,
     phone,
     address,
+    quantity,
   } = req.body;
 
   const buyer_id = req.user.id;
 
   try {
     for (const order of orders) {
-      const product_id = order.id;
-      const seller_id = order.seller_id;
+      const { id: product_id, seller_id, quantity } = order;
 
       const newOrder = await pool.query(
         `INSERT INTO orders 
-          (product_id, buyer_id, seller_id, recipient_name, phone, address)
-         VALUES ($1, $2, $3, $4, $5, $6)
+          (product_id, buyer_id, seller_id, recipient_name, phone, address, quantity)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING *`,
-        [product_id, buyer_id, seller_id, recipient_name, phone, address]
+        [product_id, buyer_id, seller_id, recipient_name, phone, address, quantity || 1]
       );
 
       // ✅ Fetch product info
@@ -61,6 +61,7 @@ router.post("/confirm", authenticateUser, async (req, res) => {
 
 Хүлээн авагч: ${recipient_name}
 Утас: ${phone}
+Захиалсан хэмжээ: ${quantity}
 Хаяг: ${address}
       `.trim();
 

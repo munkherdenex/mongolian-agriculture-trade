@@ -81,18 +81,18 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// ✅ Add a New Product with Image Upload
+// ✅ Add a New Product with Image Upload (with quantity)
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     console.log("Received data:", req.body);
     console.log("Received file:", req.file);
 
-    const { title, description, price, location, contact, user_id } = req.body;
+    const { title, description, price, location, contact, user_id, quantity, unit  } = req.body;
     const imageUrl = req.file ? req.file.path : null;
 
     const result = await pool.query(
-      "INSERT INTO products (title, description, price, location, image_url, contact, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
-      [title, description, price, location, imageUrl, contact, user_id]
+      "INSERT INTO products (title, description, price, location, image_url, contact, user_id, quantity, unit ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+      [title, description, price, location, imageUrl, contact, user_id, quantity, unit]
     );
 
     res.json(result.rows[0]);
@@ -101,6 +101,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
 
 // ✅ Delete a Product
 router.delete("/:id", authenticateUser, async (req, res) => {

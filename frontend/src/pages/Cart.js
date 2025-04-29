@@ -21,6 +21,7 @@ function Cart() {
   const [recipientName, setRecipientName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -64,6 +65,7 @@ function Cart() {
           recipient_name: recipientName,
           phone,
           address,
+          quantity,
         },
         {
           headers: {
@@ -109,6 +111,7 @@ function Cart() {
         setRecipientName("");
         setPhone("");
         setAddress("");
+        setQuantity("");
       }
     } catch (err) {
       console.error("❌ Order confirmation failed:", err);
@@ -140,7 +143,11 @@ function Cart() {
                 >
                   <ListItemText
                     primary={item.name}
-                    secondary={`${item.price}₮`}
+                    secondary={
+                      <>
+                        <div>{item.price}₮</div>
+                      </>
+                    }
                   />
                 </ListItem>
                 <Divider />
@@ -177,6 +184,14 @@ function Cart() {
           variant="outlined"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          label="Захиалах хэмжээ"
+          fullWidth
+          variant="outlined"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
           sx={{ mb: 2 }}
         />
 

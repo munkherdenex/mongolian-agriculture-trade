@@ -33,27 +33,30 @@ function UserMenu({ user, menuItems }) {
         onClose={handleMenuClose}
       >
         {menuItems.map((item) => (
-          item.link ? (
-            <MenuItem
-              key={item.text}
-              component={Link}
-              to={item.link}
-              onClick={handleMenuClose}
-            >
-              {item.text}
-            </MenuItem>
-          ) : (
-            <MenuItem
-              key={item.text}
-              onClick={() => {
-                handleMenuClose();
-                item.onClick && item.onClick();
-              }}
-            >
-              {item.text}
-            </MenuItem>
-          )
-        ))}
+         <MenuItem
+           key={item.text}
+           component={item.link ? Link : "button"}
+           to={item.link}
+           onClick={() => {
+             handleMenuClose();
+             item.onClick && item.onClick();
+           }}
+           sx={{
+             ...(item.danger
+               ? {
+                   color: "error.main",
+                   fontWeight: 600,
+                   "&:hover": {
+                     backgroundColor: "rgba(244, 67, 54, 0.08)", 
+                   },
+                 }
+               : {})
+           }}
+         >
+           {item.text}
+         </MenuItem>
+       ))}
+
       </Menu>
     </>
   );

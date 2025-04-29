@@ -24,7 +24,6 @@ function Navbar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  // Main Menu
   const menuItems = [
     { text: "Нүүр", link: "/" },
     { text: "Бидний тухай", link: "/about" },
@@ -33,20 +32,18 @@ function Navbar() {
     { text: "Чат", link: "/chat" }
   ];
 
-  // User menu items (inside UserMenu dropdown)
   const userMenuItems = user ? [
-    { text: "Хадгалсан", link: "/saved-products" },
-    { text: "Миний бүтээгдэхүүн", link: "/my-products" },
-    { text: "Нэмэх", link: "/add-product" },
-    { text: "Cart", link: "/cart" },
-    { text: "Гарах", onClick: logout }
+    { text: "💾 Хадгалсан", link: "/saved-products" },
+    { text: "📦 Миний бүтээгдэхүүн", link: "/my-products" },
+    { text: "➕ Нэмэх", link: "/add-product" },
+    { text: "🛒 Сагс", link: "/cart" },
+    { text: "Гарах", onClick: logout, danger: true }
   ] : [];
 
   return (
     <>
       <AppBar position="static" sx={{ backgroundColor: "#4E944F" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", minHeight: 72 }}>
-          {/* Left side */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {isMobile && (
               <IconButton
@@ -73,7 +70,6 @@ function Navbar() {
             </Typography>
           </Box>
 
-          {/* Desktop Menu */}
           {!isMobile && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               {menuItems.map((item) => (
@@ -100,7 +96,6 @@ function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer */}
       <Drawer anchor="left" open={mobileOpen} onClose={() => setMobileOpen(false)}>
         <Box sx={{ width: 250 }} role="presentation" onClick={() => setMobileOpen(false)}>
           <List>
