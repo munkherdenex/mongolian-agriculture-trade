@@ -1,52 +1,62 @@
 import React, { useState } from "react";
-import { Menu, MenuItem, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Menu, MenuItem, IconButton, Typography } from "@mui/material";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import { Link } from "react-router-dom";
 
-const UserMenu = ({ user, onLogout }) => {
+function UserMenu({ user, menuItems }) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const navigate = useNavigate();
 
-  const handleClick = (event) => {
+  const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleMenuClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleLogout = () => {
-    onLogout();
-    handleClose();
-  };
-
-  const goToMyProducts = () => {
-    navigate("/my-products");
-    handleClose();
   };
 
   return (
     <>
-      <Button
+      <IconButton
+        size="large"
+        edge="end"
         color="inherit"
-        onClick={handleClick}
-        sx={{ textTransform: "none", fontWeight: 500 }}
+        onClick={handleMenuOpen}
       >
-        Сайн байна уу, {user.name}
-      </Button>
+        <AccountCircle />
+        <Typography sx={{ ml: 1, fontWeight: 500 }}>
+          Сайн байна уу, {user.name}
+        </Typography>
+      </IconButton>
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        onClose={handleMenuClose}
       >
-        <MenuItem onClick={goToMyProducts}>Миний бүтээгдэхүүнүүд</MenuItem>
-        <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
-          Гарах
-        </MenuItem>
+        {menuItems.map((item) => (
+          item.link ? (
+            <MenuItem
+              key={item.text}
+              component={Link}
+              to={item.link}
+              onClick={handleMenuClose}
+            >
+              {item.text}
+            </MenuItem>
+          ) : (
+            <MenuItem
+              key={item.text}
+              onClick={() => {
+                handleMenuClose();
+                item.onClick && item.onClick();
+              }}
+            >
+              {item.text}
+            </MenuItem>
+          )
+        ))}
       </Menu>
     </>
   );
-};
+}
 
 export default UserMenu;

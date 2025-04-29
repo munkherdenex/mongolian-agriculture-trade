@@ -24,32 +24,29 @@ function Navbar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  // Main Menu
   const menuItems = [
     { text: "Нүүр", link: "/" },
     { text: "Бидний тухай", link: "/about" },
     { text: "Холбогдох", link: "/contact" },
     { text: "Бүтээгдэхүүн", link: "/products" },
-    { text: "Хадгалсан", link: "/saved-products" },
-    { text: "Cart", link: "/cart" },
-    { text: "Нэмэх", link: "/add-product" },
     { text: "Чат", link: "/chat" }
   ];
 
-  const userMenuItems = user
-    ? [
-        { text: `Сайн байна уу, ${user.name}`, link: "#" },
-        { text: "Миний бүтээгдэхүүн", link: "/my-products" },
-        { text: "Гарах", link: "#", onClick: logout }
-      ]
-    : [
-        { text: "Нэвтрэх", link: "/login" },
-        { text: "Бүртгүүлэх", link: "/signup" }
-      ];
+  // User menu items (inside UserMenu dropdown)
+  const userMenuItems = user ? [
+    { text: "Хадгалсан", link: "/saved-products" },
+    { text: "Миний бүтээгдэхүүн", link: "/my-products" },
+    { text: "Нэмэх", link: "/add-product" },
+    { text: "Cart", link: "/cart" },
+    { text: "Гарах", onClick: logout }
+  ] : [];
 
   return (
     <>
       <AppBar position="static" sx={{ backgroundColor: "#4E944F" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between", minHeight: 72 }}>
+          {/* Left side */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {isMobile && (
               <IconButton
@@ -91,7 +88,7 @@ function Navbar() {
                 </Button>
               ))}
               {user ? (
-                <UserMenu user={user} onLogout={logout} />
+                <UserMenu user={user} menuItems={userMenuItems} />
               ) : (
                 <>
                   <Button color="inherit" component={Link} to="/login">Нэвтрэх</Button>
@@ -112,17 +109,28 @@ function Navbar() {
                 <ListItemText primary={item.text} />
               </ListItem>
             ))}
-            {userMenuItems.map((item) => (
-              <ListItem
-                button
-                component={item.link === "#" ? "div" : Link}
-                to={item.link !== "#" ? item.link : undefined}
-                key={item.text}
-                onClick={item.onClick}
-              >
-                <ListItemText primary={item.text} />
-              </ListItem>
-            ))}
+            {user ? (
+              userMenuItems.map((item) => (
+                <ListItem
+                  button
+                  component={item.link ? Link : "div"}
+                  to={item.link || undefined}
+                  key={item.text}
+                  onClick={item.onClick}
+                >
+                  <ListItemText primary={item.text} />
+                </ListItem>
+              ))
+            ) : (
+              <>
+                <ListItem button component={Link} to="/login">
+                  <ListItemText primary="Нэвтрэх" />
+                </ListItem>
+                <ListItem button component={Link} to="/signup">
+                  <ListItemText primary="Бүртгүүлэх" />
+                </ListItem>
+              </>
+            )}
           </List>
         </Box>
       </Drawer>
