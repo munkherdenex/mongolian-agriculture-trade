@@ -28,7 +28,7 @@ function Footer() {
     </Typography>
   </Box>
   <Typography variant="body2" color="textSecondary">
-    Хөдөө аж ахуйн бүтээгдэхүүний найдвартай худалдаа, солилцооны платформ. 
+    Хөдөө аж ахуйн бүтээгдэхүүний худалдаа, солилцооны платформ. 
     Хэрэглэгчдийг шууд холбох зорилготой.
   </Typography>
 </Grid>
@@ -62,7 +62,7 @@ function Footer() {
         <Divider sx={{ my: 3 }} />
 
         <Typography variant="body2" color="textSecondary" align="center">
-          © {new Date().getFullYear()} AgroMongol. Бүх эрх хуулиар хамгаалагдсан.
+          © {new Date().getFullYear()} AgroMongol. 
         </Typography>
       </Container>
     </Box>
