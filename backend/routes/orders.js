@@ -6,25 +6,24 @@ const pool = require("../db");
 // Confirm order and notify seller via chat
 router.post("/confirm", authenticateUser, async (req, res) => {
   const {
-    orders, // [{ product_id, seller_id }]
+    orders, // [{ id: product_id, seller_id, quantity }]
     recipient_name,
     phone,
     address,
-    quantity,
   } = req.body;
 
   const buyer_id = req.user.id;
 
   try {
     for (const order of orders) {
-      const { id: product_id, seller_id, quantity } = order;
+      const { id: product_id, seller_id, quantity = 1 } = order;
 
       const newOrder = await pool.query(
         `INSERT INTO orders 
           (product_id, buyer_id, seller_id, recipient_name, phone, address, quantity)
          VALUES ($1, $2, $3, $4, $5, $6, $7)
          RETURNING *`,
-        [product_id, buyer_id, seller_id, recipient_name, phone, address, quantity || 1]
+        [product_id, buyer_id, seller_id, recipient_name, phone, address, quantity]
       );
 
       // ✅ Fetch product info
@@ -78,7 +77,5 @@ router.post("/confirm", authenticateUser, async (req, res) => {
     res.status(500).json({ error: "Захиалга илгээхэд алдаа гарлаа." });
   }
 });
-
-
 
 module.exports = router;

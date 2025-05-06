@@ -7,7 +7,6 @@ import {
   Button,
   List,
   ListItem,
-  ListItemText,
   IconButton,
   Box,
   Paper,
@@ -21,7 +20,6 @@ function Cart() {
   const [recipientName, setRecipientName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [quantity, setQuantity] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,10 +29,28 @@ function Cart() {
       const cartKey = `cart_${user.id}`;
       const storedCart = localStorage.getItem(cartKey);
       if (storedCart) {
-        setCartItems(JSON.parse(storedCart));
+        const parsedCart = JSON.parse(storedCart);
+        const cartWithQuantities = parsedCart.map((item) => ({
+          ...item,
+          quantity: item.quantity || 1,
+        }));
+        setCartItems(cartWithQuantities);
       }
     }
   }, []);
+
+  const updateQuantity = (id, newQty) => {
+    const updated = cartItems.map((item) =>
+      item.id === id ? { ...item, quantity: parseInt(newQty) || 1 } : item
+    );
+    setCartItems(updated);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      const cartKey = `cart_${user.id}`;
+      localStorage.setItem(cartKey, JSON.stringify(updated));
+    }
+  };
 
   const removeFromCart = (productId) => {
     const updatedCart = cartItems.filter((item) => item.id !== productId);
@@ -65,7 +81,6 @@ function Cart() {
           recipient_name: recipientName,
           phone,
           address,
-          quantity,
         },
         {
           headers: {
@@ -77,7 +92,7 @@ function Cart() {
 
       if (orderResponse.status === 200) {
         for (const item of cartItems) {
-          const messageText = `Таны "${item.name}" бараанд шинэ захиалга ирлээ!\n` +
+          const messageText = `Таны "${item.title}" бараанд шинэ захиалга ирлээ!\n` +
             `🔗 Холбоос: http://localhost:3000/product/${item.id}`;
 
           try {
@@ -111,7 +126,6 @@ function Cart() {
         setRecipientName("");
         setPhone("");
         setAddress("");
-        setQuantity("");
       }
     } catch (err) {
       console.error("❌ Order confirmation failed:", err);
@@ -134,21 +148,34 @@ function Cart() {
           <List>
             {cartItems.map((item) => (
               <div key={item.id}>
-                <ListItem
-                  secondaryAction={
-                    <IconButton edge="end" onClick={() => removeFromCart(item.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <ListItemText
-                    primary={item.name}
-                    secondary={
-                      <>
-                        <div>{item.price}₮</div>
-                      </>
-                    }
+                <ListItem alignItems="center" sx={{ gap: 2 }}>
+                  <img
+                    src={item.image_url || "/placeholder.png"}
+                    alt={item.title || "Бараа"}
+                    style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 8 }}
                   />
+
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      {item.title || "Барааны нэр байхгүй"}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Үнэ: {item.price ? `${item.price}₮` : "Үнэ тодорхойгүй"}
+                    </Typography>
+                    <TextField
+                      type="number"
+                      label="Тоо ширхэг"
+                      size="small"
+                      value={item.quantity}
+                      onChange={(e) => updateQuantity(item.id, e.target.value)}
+                      sx={{ mt: 1, width: 120 }}
+                      inputProps={{ min: 1 }}
+                    />
+                  </Box>
+
+                  <IconButton edge="end" onClick={() => removeFromCart(item.id)}>
+                    <DeleteIcon />
+                  </IconButton>
                 </ListItem>
                 <Divider />
               </div>
@@ -186,19 +213,11 @@ function Cart() {
           onChange={(e) => setAddress(e.target.value)}
           sx={{ mb: 2 }}
         />
-        <TextField
-          label="Захиалах хэмжээ"
-          fullWidth
-          variant="outlined"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-          sx={{ mb: 2 }}
-        />
 
         <Button
           variant="contained"
-          color="primary"
           fullWidth
+          sx={{ backgroundColor: "#6A994E", '&:hover': { backgroundColor: "#588b47" } }}
           onClick={handleConfirmOrder}
           disabled={isSubmitting || cartItems.length === 0}
         >
