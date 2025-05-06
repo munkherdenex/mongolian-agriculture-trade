@@ -20,7 +20,6 @@ import ProductDetails from './pages/ProductDetails';
 import axios from "axios";
 import MyProducts from "./pages/MyProducts";
 
-// ✅ Moved the inner logic into a separate component
 function AppContent() {
   const { user } = useContext(AuthContext);
   const [savedProducts, setSavedProducts] = useState([]);
@@ -76,7 +75,6 @@ function AppContent() {
   );
 }
 
-// ✅ Wrap the app with AuthProvider here
 function App() {
   return (
     <AuthProvider>

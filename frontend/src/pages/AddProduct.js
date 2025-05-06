@@ -213,7 +213,7 @@ const AddProduct = () => {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={loading} // ✅ Disabled while loading
+          disabled={loading} 
           sx={{
             mt: 2,
             backgroundColor: "#6A994E",
