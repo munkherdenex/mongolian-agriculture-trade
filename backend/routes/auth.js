@@ -5,14 +5,12 @@ const jwt = require("jsonwebtoken");
 const pool = require("../db");
 require("dotenv").config();
 
-// Test Route
 router.get("/", (req, res) => {
   res.send("Auth route working!");
 });
 
-// User registration (Sign Up)
 router.post("/register", async (req, res) => {
-  console.log("Received request:", req.body);  // Debug log
+  console.log("Received request:", req.body);  
 
   const { name, email, password } = req.body;
   try {
@@ -33,7 +31,7 @@ router.post("/register", async (req, res) => {
       [name, email, hashedPassword]
     );
 
-    console.log("User registered:", newUser.rows[0]);  // Debug log
+    console.log("User registered:", newUser.rows[0]); 
     res.json({ message: "User registered successfully", user: newUser.rows[0] });
 
   } catch (error) {
@@ -43,23 +41,19 @@ router.post("/register", async (req, res) => {
 });
 
 
-// User login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
-    // Check if user exists
     const user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (user.rows.length === 0) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.rows[0].password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT Token
     const token = jwt.sign(
       { id: user.rows[0].id, name: user.rows[0].name, email: user.rows[0].email },
       process.env.JWT_SECRET,

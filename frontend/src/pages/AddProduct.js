@@ -22,7 +22,7 @@ const AddProduct = () => {
   });
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false); // ✅ Loading state
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -40,7 +40,7 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // ✅ Start loading
+    setLoading(true); 
 
     const formattedPrice = parseFloat(formData.price);
     const user = JSON.parse(localStorage.getItem("user"));
@@ -72,7 +72,7 @@ const AddProduct = () => {
       console.error("Error adding product:", error);
       alert("Алдаа гарлаа. Та дахин оролдоно уу!");
     } finally {
-      setLoading(false); // ✅ End loading
+      setLoading(false); 
     }
   };
 

@@ -3,10 +3,9 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// Confirm order and notify seller via chat
 router.post("/confirm", authenticateUser, async (req, res) => {
   const {
-    orders, // [{ id: product_id, seller_id, quantity }]
+    orders, 
     recipient_name,
     phone,
     address,
@@ -26,7 +25,6 @@ router.post("/confirm", authenticateUser, async (req, res) => {
         [product_id, buyer_id, seller_id, recipient_name, phone, address, quantity]
       );
 
-      // ✅ Fetch product info
       const productResult = await pool.query(
         `SELECT title FROM products WHERE id = $1`,
         [product_id]
@@ -34,7 +32,6 @@ router.post("/confirm", authenticateUser, async (req, res) => {
 
       const productTitle = productResult.rows[0]?.title || "Тодорхойгүй нэртэй бүтээгдэхүүн";
 
-      // ✅ Create or find conversation
       let convo = await pool.query(
         `SELECT * FROM conversations 
          WHERE product_id = $1 AND buyer_id = $2 AND seller_id = $3`,

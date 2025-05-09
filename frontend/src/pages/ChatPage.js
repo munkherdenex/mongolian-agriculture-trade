@@ -165,12 +165,11 @@ const ChatPage = () => {
   };
 
   if (!user) {
-    return null; // already redirected
+    return null; 
   }
 
   return (
     <Box sx={{ display: "flex", height: "90vh", bgcolor: "#f5f5f5" }}>
-      {/* Sidebar */}
       <Box
         sx={{
           width: "25%",
@@ -220,7 +219,6 @@ const ChatPage = () => {
         </List>
       </Box>
 
-      {/* Chat Content */}
       <Box sx={{ width: "75%", p: 3, display: "flex", flexDirection: "column" }}>
         {selectedConv ? (
           <>

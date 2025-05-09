@@ -12,7 +12,6 @@ import Footer from "../components/Footer";
 function Home() {
   return (
     <Box sx={{ width: "100%", overflowX: "hidden" }}>
-      {/* Hero Section */}
       <Box
         sx={{
           width: "100%",
@@ -46,7 +45,6 @@ function Home() {
         </Button>
       </Box>
 
-      {/* About Section */}
       <Box sx={{ px: { xs: 2, md: 10 }, py: 8 }}>
         <Grid container spacing={4} alignItems="center">
           <Grid item xs={12} md={6}>
@@ -70,7 +68,6 @@ function Home() {
         </Grid>
       </Box>
 
-      {/* Benefits Section */}
       <Box sx={{ bgcolor: "#f9f9f9", py: 6, px: { xs: 2, md: 10 } }}>
         <Typography variant="h4" gutterBottom textAlign="center">
           Давуу талууд
@@ -108,7 +105,6 @@ function Home() {
         </Grid>
       </Box>
 
-      {/* Call to Action */}
       <Box sx={{ px: { xs: 2, md: 10 }, py: 8 }}>
         <Grid container spacing={6} alignItems="center">
           <Grid item xs={12} md={6}>
@@ -143,7 +139,6 @@ function Home() {
         </Grid>
       </Box>
 
-      {/* How It Works */}
       <Box sx={{ bgcolor: "#f9f9f9", py: 8 }}>
         <Typography variant="h4" textAlign="center" gutterBottom>
           Хэрхэн ажилладаг вэ?

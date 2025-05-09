@@ -6,7 +6,6 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../cloudinary");
 const { authenticateUser } = require('../middleware/auth');
 
-// Setup Cloudinary storage for multer
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
@@ -16,7 +15,6 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage });
 
-// ✅ Get All Products with Optional Filters
 router.get("/", async (req, res) => {
   try {
     console.log("🔥 GET /api/products called");
@@ -62,7 +60,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ Get Single Product by ID
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -81,7 +78,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// ✅ Add a New Product with Image Upload (with quantity)
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     console.log("Received data:", req.body);
@@ -103,13 +99,11 @@ router.post("/", upload.single("image"), async (req, res) => {
 });
 
 
-// ✅ Delete a Product
 router.delete("/:id", authenticateUser, async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
 
-    // Check if product belongs to the logged-in user
     const product = await pool.query("SELECT * FROM products WHERE id = $1", [id]);
 
     if (product.rows.length === 0) {

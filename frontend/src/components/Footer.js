@@ -15,7 +15,6 @@ function Footer() {
     >
       <Container maxWidth="lg">
         <Grid container spacing={4} justifyContent="space-between">
-{/* Logo + About */}
 <Grid item xs={12} sm={4}>
   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
     <img
@@ -44,7 +43,6 @@ function Footer() {
             </Box>
           </Grid>
 
-          {/* Contact Info */}
           <Grid item xs={12} sm={4}>
             <Typography variant="subtitle1" gutterBottom>
               Холбоо барих

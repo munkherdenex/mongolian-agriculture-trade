@@ -9,7 +9,6 @@ const orderRoutes = require("./routes/orders");
 const app = express();
 const server = http.createServer(app);
 
-// Middleware
 app.use(cors({
   origin: "http://localhost:3000",
   credentials: true,
@@ -17,7 +16,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// API Routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/products", require("./routes/products"));
 app.use("/api/saved-products", require("./routes/savedProducts"));
@@ -26,12 +24,10 @@ app.use("/api/my-products", require("./routes/myProducts"));
 app.use("/api/chat", require("./routes/chat"));
 app.use("/api/orders", orderRoutes);
 
-// 404 Fallback
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// 🔌 Setup Socket.IO
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
@@ -39,12 +35,11 @@ const io = new Server(server, {
   }
 });
 
-const connectedUsers = new Map(); // Track userId <-> socket.id
+const connectedUsers = new Map(); 
 
 io.on("connection", (socket) => {
   console.log("✅ New user connected:", socket.id);
 
-  // Listen when user registers their ID after login
   socket.on("registerUser", (userId) => {
     connectedUsers.set(userId, socket.id);
     console.log(`📍 Registered user ${userId} to socket ${socket.id}`);
@@ -75,10 +70,8 @@ io.on("connection", (socket) => {
 
       io.to(roomId).emit("receive_message", newMessage);
 
-      // 🎯 Notify recipient (if online)
       const recipientSocketId = connectedUsers.get(recipientId);
       if (recipientSocketId && !Array.from(socket.rooms).includes(roomId)) {
-        // Recipient is online but not in the room (i.e., not currently chatting)
         io.to(recipientSocketId).emit("newMessageNotification", {
           fromUserId: userId,
           fromUsername: username,
@@ -93,7 +86,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    // Remove from map
     for (let [userId, sockId] of connectedUsers.entries()) {
       if (sockId === socket.id) {
         connectedUsers.delete(userId);
@@ -106,7 +98,6 @@ io.on("connection", (socket) => {
 
 
 
-// 🚀 Start the server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`🚀 Server with Socket.IO running on http://localhost:${PORT}`);

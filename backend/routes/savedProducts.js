@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// Get all saved products
 router.get("/:user_id", async (req, res) => {
   const { user_id } = req.params;
 
@@ -27,7 +26,6 @@ router.get("/:user_id", async (req, res) => {
 });
 
 
-// Save a product
 router.post("/", async (req, res) => {
   try {
     const { user_id, product_id } = req.body;
@@ -42,7 +40,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Remove a saved product
 router.delete("/:user_id/:product_id", async (req, res) => {
   try {
     const { user_id, product_id } = req.params;

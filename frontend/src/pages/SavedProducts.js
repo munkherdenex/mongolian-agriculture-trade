@@ -48,7 +48,6 @@ function SavedProducts() {
           savedProducts.map((product) => (
             <Grid item key={product.id} xs={12} sm={6} md={4}>
               <Card className="saved-products-card" sx={{ position: "relative" }}>
-                {/* ✅ Link wraps the media and content to make it clickable */}
                 <Link to={`/products/${product.id}`} style={{ textDecoration: "none", color: "inherit" }}>
                   <CardMedia
                     component="img"
@@ -69,7 +68,6 @@ function SavedProducts() {
                   </CardContent>
                 </Link>
 
-                {/* ✅ Remove Button outside of Link to prevent unwanted navigation */}
                 <Button
                   variant="contained"
                   color="secondary"

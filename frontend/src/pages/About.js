@@ -13,7 +13,6 @@ function About() {
   return (
     <>
       <Container sx={{ py: 6 }}>
-        {/* Title Section */}
         <Box sx={{ textAlign: "center", mb: 5 }}>
           <Typography variant="h3" fontWeight={700} gutterBottom>
             Бидний тухай
@@ -26,9 +25,7 @@ function About() {
         <Divider sx={{ my: 6 }} />
 
 
-        {/* Image and Text Section */}
         <Grid container spacing={4} alignItems="center">
-          {/* Left: Image */}
           <Grid item xs={12} md={6}>
   <Box sx={{ textAlign: "center" }}>
     <img
@@ -44,7 +41,6 @@ function About() {
   </Box>
 </Grid>
 
-          {/* Right: Text */}
           <Grid item xs={12} md={6}>
             <Box>
               <Typography variant="h5" fontWeight={600} gutterBottom>
@@ -69,7 +65,6 @@ function About() {
 
         <Divider sx={{ my: 6 }} />
 
-        {/* Why Us Section */}
         <Box sx={{ textAlign: "center", mb: 4 }}>
           <Typography variant="h4" fontWeight={600} gutterBottom>
             Яагаад бид?

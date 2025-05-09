@@ -54,7 +54,6 @@ const MyProducts = () => {
         },
       });
 
-      // Remove the deleted product from state
       setProducts(products.filter(p => p.id !== productId));
       alert("Бүтээгдэхүүн амжилттай устгагдлаа!");
     } catch (error) {

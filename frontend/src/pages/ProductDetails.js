@@ -76,7 +76,6 @@ const ProductDetails = () => {
     if (!user) return alert("Та нэвтэрч орно уу.");
     if (!product?.id) return alert("Барааны мэдээлэл бүрэн биш байна.");
   
-    // Create a unique cart key per user
     const cartKey = `cart_${user.id}`;
   
     const existingCart = JSON.parse(localStorage.getItem(cartKey)) || [];
@@ -143,7 +142,6 @@ const ProductDetails = () => {
                  💰 Үнэ: <strong>{product.price ? `${product.price}₮` : "Мэдээлэл байхгүй"}</strong>
                </Typography>
 
-               {/* ✅ Add this new Quantity + Unit line */}
                <Typography variant="h6">
                  📦 Тоо хэмжээ:{" "}
                  <strong>

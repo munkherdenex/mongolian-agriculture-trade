@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// GET messages for a specific conversation
 router.get("/messages/:conversationId", async (req, res) => {
   const { conversationId } = req.params;
 
@@ -18,7 +17,6 @@ router.get("/messages/:conversationId", async (req, res) => {
   }
 });
 
-// GET users from conversations
 router.get("/users", async (req, res) => {
   const { userId } = req.query;
 
@@ -46,7 +44,6 @@ router.get("/users", async (req, res) => {
   }
 });
 
-// GET all conversations of a user (with unread_count)
 router.get("/conversations/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -82,7 +79,6 @@ router.get("/conversations/:userId", async (req, res) => {
 });
 
 
-// Start a new conversation (or get existing one)
 router.post("/start", async (req, res) => {
   const { product_id, buyer_id, seller_id } = req.body;
 
@@ -115,7 +111,6 @@ router.post("/start", async (req, res) => {
   }
 });
 
-// Send a message
 router.post("/send", async (req, res) => {
   const { conversation_id, sender_id, message } = req.body;
 
@@ -133,8 +128,6 @@ router.post("/send", async (req, res) => {
   }
 });
 
-// Mark messages as read
-// backend/chat.js
 router.patch("/read", async (req, res) => {
   const { conversation_id, user_id } = req.body;
 

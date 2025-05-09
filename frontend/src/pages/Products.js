@@ -78,7 +78,6 @@ function Products() {
     <Container>
       <Typography variant="h4" gutterBottom>Бүтээгдэхүүн</Typography>
 
-      {/* Search & Filter */}
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
         <TextField
           label="Хайх"
@@ -109,7 +108,6 @@ function Products() {
         </Button>
       </div>
 
-      {/* Product Cards */}
       <Grid container spacing={3}>
         {filteredProducts.length > 0 ? (
           filteredProducts.map(product => (
