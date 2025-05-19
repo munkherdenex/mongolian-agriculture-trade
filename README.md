@@ -1,2 +1,3 @@
-# mongolian-agriculture-trade
-A platform for buying and selling Mongolian agricultural products.
+# Mongolian Agriculture Trade Platform
+
+This is a web platform to connect Mongolian agricultural buyers and sellers.
