@@ -40,7 +40,7 @@ const ChatPage = () => {
   useEffect(() => {
     if (!user?.id) return;
     axios
-      .get(`http://localhost:5000/api/chat/conversations/${user.id}`)
+      .get(`https://agromongol-backend.onrender.com/api/chat/conversations/${user.id}`)
       .then((res) => setConversations(res.data))
       .catch((err) => console.error("Error fetching conversations:", err));
   }, [user?.id]);
@@ -48,7 +48,7 @@ const ChatPage = () => {
   useEffect(() => {
     if (productId && sellerId && user?.id) {
       axios
-        .post("http://localhost:5000/api/chat/start", {
+        .post("https://agromongol-backend.onrender.com/api/chat/start", {
           product_id: productId,
           buyer_id: user.id,
           seller_id: sellerId,
@@ -60,7 +60,7 @@ const ChatPage = () => {
 
   const fetchMessages = useCallback(async (convId) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/chat/messages/${convId}`);
+      const res = await axios.get(`https://agromongol-backend.onrender.com/api/chat/messages/${convId}`);
       setMessages(res.data);
     } catch (err) {
       console.error("Error fetching messages:", err);
@@ -97,7 +97,7 @@ const ChatPage = () => {
     };
 
     socket.emit("send_message", messageData);
-    axios.post("http://localhost:5000/api/chat/send", messageData);
+    axios.post("https://agromongol-backend.onrender.com/api/chat/send", messageData);
 
     setMessages((prev) => [
       ...prev,
@@ -147,7 +147,7 @@ const ChatPage = () => {
     setSelectedConv(conv);
 
     try {
-      await axios.patch("http://localhost:5000/api/chat/read", {
+      await axios.patch("https://agromongol-backend.onrender.com/api/chat/read", {
         conversation_id: conv.id,
         user_id: user.id,
       });

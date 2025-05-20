@@ -33,7 +33,7 @@ function AppContent() {
     const fetchSavedProducts = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/saved-products", {
+        const response = await axios.get("https://agromongol-backend.onrender.com/api/saved-products", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setSavedProducts(response.data);

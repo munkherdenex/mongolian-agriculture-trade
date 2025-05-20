@@ -22,7 +22,7 @@ const MyProducts = () => {
       const token = localStorage.getItem("token");
       console.log("🛡 Token being sent:", token);
 
-      const response = await axios.get("http://localhost:5000/api/my-products", {
+      const response = await axios.get("https://agromongol-backend.onrender.com/api/my-products", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -48,7 +48,7 @@ const MyProducts = () => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.delete(`http://localhost:5000/api/products/${productId}`, {
+      await axios.delete(`https://agromongol-backend.onrender.com/api/products/${productId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
