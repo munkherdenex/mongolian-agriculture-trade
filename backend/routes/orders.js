@@ -53,7 +53,6 @@ router.post("/confirm", authenticateUser, async (req, res) => {
 🛒 Шинэ захиалга ирлээ!
 
 Бүтээгдэхүүн: ${productTitle}
-🔗 Холбоос: /products/${product_id}
 
 Хүлээн авагч: ${recipient_name}
 Утас: ${phone}
