@@ -1,4 +1,4 @@
-# 🐄 Mongolian Agriculture Trade Platform
+#  Mongolian Agriculture Trade Platform
 
 [ Visit the Website](https://mongolian-agriculture-trade.vercel.app/)
 
@@ -7,7 +7,7 @@ A modern web platform that simplifies agricultural trade in Mongolia by connecti
 
 ---
 
-## 🚀 Features
+##  Features
 
 - **Product Listings** – Farmers can post agricultural products with images and details  
 - **Save Products** – Buyers can save products they are interested in  
@@ -17,7 +17,7 @@ A modern web platform that simplifies agricultural trade in Mongolia by connecti
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 **Frontend:**  
 - React.js  
