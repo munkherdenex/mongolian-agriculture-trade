@@ -49,7 +49,7 @@ A modern web platform that simplifies agricultural trade in Mongolia by connecti
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR-USERNAME/mongolian-agriculture-trade.git
+git clone https://github.com/munkherdenex/mongolian-agriculture-trade.git
 
 # Frontend Setup
 cd frontend
