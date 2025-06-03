@@ -77,17 +77,31 @@ function Account() {
           </Button>
 
           <Button
-            variant="outlined"
+            variant="contained"
+            onClick={() => navigate("/my-products")}
+            sx={{
+              backgroundColor: "#4E944F",
+              color: "white",
+              "&:hover": { backgroundColor: "#3a783f" }
+            }}
+            fullWidth
+          >
+            Миний бүтээгдэхүүнүүд
+          </Button>
+
+          <Button
+            variant="contained"
             onClick={() => navigate("/seller-orders")}
             sx={{
-              borderColor: "#4E944F",
-              color: "#4E944F",
-              "&:hover": { backgroundColor: "#eef7ed" }
+              backgroundColor: "#4E944F",
+              color: "white",
+              "&:hover": { backgroundColor: "#3a783f" }
             }}
             fullWidth
           >
             Миний захиалгууд
           </Button>
+
         </Box>
       </Box>
     </Container>
