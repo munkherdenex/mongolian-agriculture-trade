@@ -29,7 +29,7 @@ function EditAccount() {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFormData({ name: res.data.name, email: res.data.email });
-        setPreviewUrl(res.data.profile_image || "");
+        setPreviewUrl(res.data.profile_image_url || "");
       } catch (err) {
         console.error("⚠️ Failed to fetch user info", err);
         setError("Хэрэглэгчийн мэдээллийг ачааллахад алдаа гарлаа.");

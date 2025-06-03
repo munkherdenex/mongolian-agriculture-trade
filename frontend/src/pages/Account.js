@@ -40,7 +40,7 @@ function Account() {
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 2 }}>
           <Avatar
             alt={user.name}
-            src={user.profile_image || ""}
+            src={user.profile_image_url || ""}
             sx={{ width: 100, height: 100, mb: 2 }}
           />
           <Typography variant="h4" fontWeight="bold" color="primary">
