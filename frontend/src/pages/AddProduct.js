@@ -60,7 +60,7 @@ const AddProduct = () => {
     }
 
     try {
-      const response = await axios.post("https://agromongol-backend.onrender.com/api/products", data, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/products`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("Product added:", response.data);

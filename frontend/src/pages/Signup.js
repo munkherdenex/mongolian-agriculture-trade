@@ -27,7 +27,7 @@ function Signup() {
     setError("");
 
     try {
-      const response = await axios.post("https://agromongol-backend.onrender.com/api/auth/register", {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
         name,
         email,
         password,

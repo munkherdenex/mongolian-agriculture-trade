@@ -27,7 +27,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     axios
-      .get(`https://agromongol-backend.onrender.com/api/products/${id}`)
+      .get(`${process.env.REACT_APP_API_URL}/api/products/${id}`)
       .then((response) => {
         setProduct(response.data);
         setLoading(false);
@@ -44,7 +44,7 @@ const ProductDetails = () => {
     if (!product?.id || !product?.seller_id) return alert("Барааны мэдээлэл бүрэн биш байна.");
 
     try {
-      await axios.post("https://agromongol-backend.onrender.com/api/chat/start", {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/chat/start`, {
         product_id: product.id,
         buyer_id: user.id,
         seller_id: product.seller_id,
@@ -61,7 +61,7 @@ const ProductDetails = () => {
     if (!product?.id) return alert("Барааны мэдээлэл бүрэн биш байна.");
 
     try {
-      await axios.post("https://agromongol-backend.onrender.com/api/saved-products", {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/saved-products`, {
         user_id: user.id,
         product_id: product.id,
       });

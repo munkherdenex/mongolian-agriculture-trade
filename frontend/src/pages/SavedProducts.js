@@ -13,7 +13,7 @@ function SavedProducts() {
       if (!user) return;
 
       try {
-        const response = await axios.get(`https://agromongol-backend.onrender.com/api/saved-products/${user.id}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/saved-products/${user.id}`);
         setSavedProducts(response.data);
       } catch (error) {
         console.error("Error fetching saved products:", error);
@@ -28,7 +28,7 @@ function SavedProducts() {
     if (!user) return;
 
     try {
-      await axios.delete(`https://agromongol-backend.onrender.com/api/saved-products/${user.id}/${productId}`);
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/saved-products/${user.id}/${productId}`);
       setSavedProducts(savedProducts.filter((product) => product.id !== productId));
       alert("Хадгалсан бүтээгдэхүүнийг устгасан");
     } catch (error) {

@@ -75,7 +75,7 @@ function Cart() {
       const token = localStorage.getItem("token");
 
       const orderResponse = await axios.post(
-        "https://agromongol-backend.onrender.com/api/orders/confirm",
+        `${process.env.REACT_APP_API_URL}/api/orders/confirm`,
         {
           orders: cartItems,
           recipient_name: recipientName,
@@ -97,7 +97,7 @@ function Cart() {
 
           try {
             await axios.post(
-              "https://agromongol-backend.onrender.com/api/chat/sendMessage",
+              `${process.env.REACT_APP_API_URL}/api/chat/sendMessage`,
               {
                 productId: item.id,
                 recipientId: item.seller_id,

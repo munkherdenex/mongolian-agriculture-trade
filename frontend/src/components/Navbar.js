@@ -33,11 +33,12 @@ function Navbar() {
   ];
 
   const userMenuItems = user ? [
-    { text: "💾 Хадгалсан", link: "/saved-products" },
-    { text: "📦 Миний бүтээгдэхүүн", link: "/my-products" },
-    { text: "➕ Нэмэх", link: "/add-product" },
-    { text: "🛒 Сагс", link: "/cart" },
-    { text: "Гарах", onClick: logout, danger: true }
+    { text: " Миний аккаунт", link: "/account" },
+    { text: " Хадгалсан", link: "/saved-products" },
+    { text: " Миний бүтээгдэхүүн", link: "/my-products" },
+    { text: " Нэмэх", link: "/add-product" },
+    { text: " Сагс", link: "/cart" },
+    { text: " Гарах", onClick: logout, danger: true }
   ] : [];
 
   return (

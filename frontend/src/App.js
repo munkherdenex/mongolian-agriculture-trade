@@ -6,10 +6,13 @@ import AuthContext from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import socket from "./socket";
 import Login from "./pages/Login";
+import Account from "./pages/Account";
+import EditAccount from "./pages/EditAccount";
 import Signup from "./pages/Signup";
 import ChatPage from "./pages/ChatPage";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import SellerOrders from "./pages/SellerOrders";
 import Contact from "./pages/Contact";
 import Products from "./pages/Products";
 import SavedProducts from "./pages/SavedProducts";
@@ -26,6 +29,7 @@ function AppContent() {
 
   useEffect(() => {
     socket.connect();
+
     if (user && user.id) {
       socket.emit("registerUser", user.id);
     }
@@ -33,7 +37,7 @@ function AppContent() {
     const fetchSavedProducts = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("https://agromongol-backend.onrender.com/api/saved-products", {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/saved-products`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setSavedProducts(response.data);
@@ -57,6 +61,8 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/account/edit" element={<EditAccount />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -65,6 +71,7 @@ function AppContent() {
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path="/chat/:productId/:recipientId" element={<ChatPage />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/seller-orders" element={<SellerOrders />} />
         <Route path="/my-products" element={<MyProducts />} />
         <Route element={<PrivateRoute />}>
           <Route path="/products" element={<Products />} />

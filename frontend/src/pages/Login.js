@@ -27,13 +27,14 @@ function Login() {
     setError("");
 
     try {
-      const response = await axios.post("https://agromongol-backend.onrender.com/api/auth/login", {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
         email,
         password,
       });
 
       const { token, user } = response.data;
 
+      localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       login(token, user);
       navigate("/products");
